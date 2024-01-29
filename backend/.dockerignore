@@ -1,0 +1,16 @@
+# Git
+.git
+../.gitignore
+
+# Docker
+.dockerignore
+
+# Python / Django
+backend/__pycache__/
+backend/*/__pycache__/
+backend/*/*/__pycache__/
+backend/*/*/*/__pycache__/
+backend/.env/
+backend/.venv/
+backend/venv/
+db.sqlite3
