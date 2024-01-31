@@ -1,5 +1,5 @@
-django==4.2
-djangorestframework==3.14.0
+django==4.0
+djangorestframework==3.13.1
 django-filter==22.1
 django-mptt==0.15.0
 pillow>=10.0,<10.1
