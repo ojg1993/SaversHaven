@@ -1,9 +1,12 @@
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from address import views
+
+router = DefaultRouter()
+router.register('countries', views.CountryViewSet)
 
 app_name = 'address'
 
 urlpatterns = [
-    path('country/', views.CountryView.as_view(), name='country'),
+    path('', include(router.urls)),
     ]

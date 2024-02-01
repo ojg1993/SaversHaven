@@ -4,8 +4,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Country
+from address.serializers import CountrySerializer
 
-COUNTRY_URL = reverse('address:country')
+COUNTRY_URL = reverse('address:country-list')
+
+def detail_url(country_id):
+    # Create and return a country detail URL
+    return reverse("address:country-detail", args=[country_id])
 
 
 def create_user(email='user@example.com', password='test123123123'):
@@ -59,3 +64,29 @@ class PrivateCountryAPITest(APITestCase):
         payload = {'name': 'Test Country'}
         res = self.client.post(COUNTRY_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_retrieve_country_detail(self):
+        '''Test retrieving country detail'''
+        country = Country.objects.create(name='Test country')
+        serializer = CountrySerializer(country)
+
+        res = self.client.get(detail_url(country.id))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+    
+    def test_update_country_detail(self):
+        '''Test updating country detail'''
+        country = Country.objects.create(name='Test country')
+        payload = {'name': 'Update country'}
+
+        res = self.client.put(detail_url(country.id), payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        country.refresh_from_db()
+        self.assertEqual(country.name, payload['name'])
+
+    def test_delete_country_detail(self):
+        '''Test delete a country'''
+        country = Country.objects.create(name='Test country')
+        res = self.client.delete(detail_url(country.id))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Country.objects.filter(id=country.id).exists())
