@@ -5,6 +5,7 @@ from address import views
 router = DefaultRouter()
 router.register('countries', views.CountryViewSet)
 router.register('counties', views.CountyViewSet)
+router.register('cities', views.CityViewSet)
 
 app_name = 'address'
 

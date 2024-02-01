@@ -20,3 +20,9 @@ class CountryViewSet(BaseAddressAttrViewSet):
 class CountyViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.CountySerializer
     queryset = models.County.objects.all()
+
+
+class CityViewSet(BaseAddressAttrViewSet):
+    serializer_class = serializers.CitySerializer
+    queryset = models.City.objects.all()
+
