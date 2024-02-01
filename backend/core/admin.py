@@ -37,4 +37,7 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ['last_login', 'created_at', 'modified_at', 'nickname']
 
 
+admin.site.register(models.Country)
+admin.site.register(models.County)
+admin.site.register(models.City)
 admin.site.register(models.User, UserAdmin)
