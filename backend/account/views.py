@@ -12,5 +12,5 @@ class RegisterView(generics.CreateAPIView):
 
 class TokenLoginView(ObtainAuthToken):
     '''Create Token upon login'''
-    serializers_class = serializers.TokenLoginSerializer
+    serializer_class = serializers.TokenLoginSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

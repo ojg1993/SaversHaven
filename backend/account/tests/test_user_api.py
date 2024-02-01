@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-REGISTER_URL = reverse('register')
-TOKEN_LOGIN_URL = reverse('login')
+REGISTER_URL = reverse('account:register')
+TOKEN_LOGIN_URL = reverse('account:login')
 
 
 def create_user(**parmas):
@@ -14,13 +14,13 @@ def create_user(**parmas):
 class PublicUserApiTest(APITestCase):
     '''Test the public features of the Account API'''
     def setUp(self):
-        self.test_user = create_user(email='login@test.com', password='test123')
+        self.test_user = create_user(email='login@test.com', password='test123123123')
 
     def test_register_successful(self):
         '''Test creating a new user'''
         payload = {
             'email': 'test@test.com',
-            'password': 'test123',
+            'password': 'test123123123',
             'nickname': 'test',
             'first_name': 'test',
             'last_name': 'test',
@@ -71,9 +71,10 @@ class PublicUserApiTest(APITestCase):
         '''Test login successful'''
         payload = {
             'email': 'login@test.com',
-            'password': 'test123'
+            'password': 'test123123123'
         }
         res = self.client.post(TOKEN_LOGIN_URL, payload)
+        self.assertIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_token_login_error_invalid_password(self):
