@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from core import models
+
 
 def create_user(email='user@example.com', password='test123'):
     '''Create and return a test user'''
@@ -40,3 +42,59 @@ class ModelTests(TestCase):
         user = get_user_model().objects.create_superuser('test@example.com', 'test123')
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_country(self):
+        '''Test creating a country'''
+        country = models.Country.objects.create(name='test country')
+        self.assertEqual(str(country), country.name)
+
+    def test_create_county(self):
+        '''Test creating a country'''
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test country')
+        self.assertEqual(str(county), f'[{country.name}] - {county.name}')
+
+    def test_create_city(self):
+        '''Test creating a city'''
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test country')
+        city = models.City.objects.create(county=county, name='test country')
+        self.assertEqual(str(city),
+                         f'[{country.name} {county.name}] - {city.name}')
+
+    def test_create_address(self):
+        '''Test creating address'''
+        user = create_user()
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test country')
+        city = models.City.objects.create(county=county, name='test country')
+        address = models.Address.objects.create(
+            user=user,
+            post_code='12345',
+            city=city,
+            street_address1='test street1',
+            street_address2='test street2'
+        )
+        self.assertEqual(str(address), f'{user.get_full_name} - {user.nickname}')
+
+    def test_get_address_full_name(self):
+        '''Test retrieving a full address'''
+        user = create_user()
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test county')
+        city = models.City.objects.create(county=county, name='test country')
+        address = models.Address.objects.create(
+            user=user,
+            post_code='12345',
+            city=city,
+            street_address1='test street1',
+            street_address2='test street2'
+        )
+        self.assertEqual(address.get_full_address(),
+                         (address.post_code,
+                          country.name,
+                          county.name,
+                          city.name,
+                          address.street_address1,
+                          address.street_address2)
+                         )
