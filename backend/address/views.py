@@ -6,8 +6,18 @@ from address.permissions import IsAdminOrReadOnly
 from core import models
 
 
-class CountryViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.CountrySerializer
-    queryset = models.Country.objects.all()
+class BaseAddressAttrViewSet(viewsets.ModelViewSet):
+    '''Base ViewSet for address attributes'''
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminOrReadOnly]
+
+
+class CountryViewSet(BaseRecipeAttrViewSet):
+    serializer_class = serializers.CountrySerializer
+    queryset = models.Country.objects.all()
+
+
+class CountyViewSet(BaseRecipeAttrViewSet):
+    serializer_class = serializers.CountySerializer
+    queryset = models.County.objects.all()
+
