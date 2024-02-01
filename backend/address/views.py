@@ -12,12 +12,11 @@ class BaseAddressAttrViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
 
-class CountryViewSet(BaseRecipeAttrViewSet):
+class CountryViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.CountrySerializer
     queryset = models.Country.objects.all()
 
 
-class CountyViewSet(BaseRecipeAttrViewSet):
+class CountyViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.CountySerializer
     queryset = models.County.objects.all()
-
