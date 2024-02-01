@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # Internal_apps
     'core',
     'account',
+    'address',
 
     # External_apps
     'rest_framework',
