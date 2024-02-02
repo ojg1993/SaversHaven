@@ -26,3 +26,7 @@ class CityViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.CitySerializer
     queryset = models.City.objects.all()
 
+
+class AddressViewSet(BaseAddressAttrViewSet):
+    serializer_class = serializers.AddressSerializer
+    queryset = models.Address.objects.all()
