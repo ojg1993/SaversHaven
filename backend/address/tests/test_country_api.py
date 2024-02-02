@@ -3,10 +3,11 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from core.models import Country
 from address.serializers import CountrySerializer
+from core.models import Country
 
 COUNTRY_URL = reverse('address:country-list')
+
 
 def detail_url(country_id):
     # Create and return a country detail URL
@@ -25,6 +26,7 @@ def create_superuser(email='admin@example.com', password='test123123123'):
 
 class PublicCountryAPITest(APITestCase):
     '''Test unauthenticated API requests'''
+
     def test_auth_required(self):
         '''Test auth required'''
         res = self.client.post(COUNTRY_URL)
@@ -34,6 +36,7 @@ class PublicCountryAPITest(APITestCase):
 
 class PrivateCountryAPITest(APITestCase):
     '''Test authenticated API requests'''
+
     def setUp(self):
         self.user = create_superuser()
         self.client.force_authenticate(self.user)
@@ -73,7 +76,7 @@ class PrivateCountryAPITest(APITestCase):
         res = self.client.get(detail_url(country.id))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
-    
+
     def test_update_country_detail(self):
         '''Test updating country detail'''
         country = Country.objects.create(name='Test country')

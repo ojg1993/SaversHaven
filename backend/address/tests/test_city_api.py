@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from core.models import Country, County, City
 from address.serializers import CitySerializer
+from core.models import City, Country, County
 
 CITY_URL = reverse('address:city-list')
 
