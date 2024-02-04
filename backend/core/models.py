@@ -66,35 +66,41 @@ class Country(models.Model):
 
 class County(models.Model):
     name = models.CharField(max_length=20)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE,
-                                related_name='counties')
-
+    country = models.ForeignKey(Country,
+                                on_delete=models.CASCADE,
+                                related_name='counties'
+                                )
     class Meta:
         verbose_name_plural = 'Counties'
 
     def __str__(self):
-        return f'[{self.country.name}] - {self.name}'
+        return self.name
 
 
 class City(models.Model):
     class Meta:
         verbose_name_plural = 'Cities'
 
+    county = models.ForeignKey(County,
+                               on_delete=models.CASCADE,
+                               related_name='cities'
+                               )
     name = models.CharField(max_length=20)
-    county = models.ForeignKey(County, on_delete=models.CASCADE, related_name='cities')
 
     def __str__(self):
-        return f'[{self.county.country.name} {self.county.name}] - {self.name}'
+        return self.name
 
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    name = models.CharField(max_length=20)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name='user_address')
     post_code = models.CharField(max_length=10)
     city = models.ForeignKey(
         City,
         on_delete=models.PROTECT,
-        limit_choices_to={'county__country__isnull': False},
-        related_name='Address'
+        related_name='city_address'
     )
     street_address1 = models.CharField(max_length=50)
     street_address2 = models.CharField(max_length=50)
@@ -103,11 +109,11 @@ class Address(models.Model):
         verbose_name_plural = 'Addresses'
 
     def __str__(self):
-        return f'{self.user.get_full_name} - {self.user.nickname}'
+        return f'{self.user.nickname} - {self.name}'
 
     def get_full_address(self):
-        full_address = (self.post_code,
-                        self.city.county.country.name,
+        full_address = (self.city.county.country.name,
+                        self.post_code,
                         self.city.county.name,
                         self.city.name,
                         self.street_address1,
