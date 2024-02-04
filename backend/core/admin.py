@@ -7,7 +7,7 @@ from core import models
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'nickname', 'password')}),
+        (None, {'fields': ('id', 'email', 'nickname', 'password')}),
         (_('Personal Info'), {"fields": ('first_name',
                                          'middle_name',
                                          'last_name',
@@ -34,7 +34,7 @@ class UserAdmin(BaseUserAdmin):
     )
     ordering = ['id']
     list_display = ['email', 'nickname', 'is_staff']
-    readonly_fields = ['last_login', 'created_at', 'modified_at', 'nickname']
+    readonly_fields = ['last_login', 'created_at', 'modified_at', 'id']
 
 
 admin.site.register(models.Country)
