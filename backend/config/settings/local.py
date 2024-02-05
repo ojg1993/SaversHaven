@@ -1,4 +1,5 @@
 from .base import *
+from django.conf import settings
 
 
 ALLOWED_HOSTS = []
@@ -21,3 +22,13 @@ DATABASES = {
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+# Django toolbar configuration
+
+settings.INSTALLED_APPS += ['debug_toolbar',]
+settings.MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
+
+INTERNAL_IPS = ['127.0.0.1']
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda x: settings.DEBUG,
+}
