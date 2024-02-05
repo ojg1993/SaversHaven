@@ -73,6 +73,7 @@ class PrivateAddressAPITest(APITestCase):
         city = City.objects.create(name='Test city', county=county)
 
         payload = {'user': self.user.id,
+                   'name': 'test name',
                    'post_code': '123123',
                    'city': city.id,
                    'street_address1': 'Test street1',

@@ -52,15 +52,14 @@ class ModelTests(TestCase):
         '''Test creating a country'''
         country = models.Country.objects.create(name='test country')
         county = models.County.objects.create(country=country, name='test country')
-        self.assertEqual(str(county), f'[{country.name}] - {county.name}')
+        self.assertEqual(str(county), county.name)
 
     def test_create_city(self):
         '''Test creating a city'''
         country = models.Country.objects.create(name='test country')
         county = models.County.objects.create(country=country, name='test country')
         city = models.City.objects.create(county=county, name='test country')
-        self.assertEqual(str(city),
-                         f'[{country.name} {county.name}] - {city.name}')
+        self.assertEqual(str(city), city.name)
 
     def test_create_address(self):
         '''Test creating address'''
@@ -75,7 +74,7 @@ class ModelTests(TestCase):
             street_address1='test street1',
             street_address2='test street2'
         )
-        self.assertEqual(str(address), f'{user.get_full_name} - {user.nickname}')
+        self.assertEqual(str(address), f'{user.nickname} - {address.name}')
 
     def test_get_address_full_name(self):
         '''Test retrieving a full address'''
@@ -91,10 +90,24 @@ class ModelTests(TestCase):
             street_address2='test street2'
         )
         self.assertEqual(address.get_full_address(),
-                         (address.post_code,
-                          country.name,
+                         (country.name,
+                          address.post_code,
                           county.name,
                           city.name,
                           address.street_address1,
                           address.street_address2)
                          )
+
+    def test_create_category(self):
+        '''Test creating category'''
+        category = models.Category.objects.create(name='test category')
+        self.assertEqual(str(category), category.name)
+
+    def test_create_children_category(self):
+        '''Test creating children category'''
+        c1 = models.Category.objects.create(name='test category1')
+        c2 = models.Category.objects.create(name='test category2', parent=c1)
+        c3 = models.Category.objects.create(name='test category3', parent=c2)
+        self.assertEqual(str(c3), c3.name)
+        self.assertEqual(str(c2), c3.parent.name)
+        self.assertEqual(str(c1), c3.parent.parent.name)
