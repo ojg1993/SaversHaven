@@ -70,6 +70,7 @@ class County(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='counties'
                                 )
+
     class Meta:
         verbose_name_plural = 'Counties'
 
