@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'core',
     'account',
     'address',
+    'product',
 
     # External_apps
     'rest_framework',

@@ -7,7 +7,6 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-
 class UserManager(BaseUserManager):
     '''Manager for users'''
 
@@ -127,11 +126,16 @@ class Address(models.Model):
                         self.street_address2)
         return full_address
 
+
 class Category(MPTTModel):
     '''Product Category having tree relation'''
     name = models.CharField(max_length=30, unique=True)
     is_active = models.BooleanField(default=True)
-    parent = TreeForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self',
+                            on_delete=models.PROTECT,
+                            null=True,
+                            blank=True,
+                            related_name='children')
 
     class MPTTMeta:
         order_insertion_by = ['name']

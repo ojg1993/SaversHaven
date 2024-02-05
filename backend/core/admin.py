@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+from mptt.admin import DraggableMPTTAdmin
 
 from core import models
 
@@ -37,8 +38,11 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ['last_login', 'created_at', 'modified_at', 'id']
 
 
+admin.site.register(models.User, UserAdmin)
+
 admin.site.register(models.Country)
 admin.site.register(models.County)
 admin.site.register(models.City)
 admin.site.register(models.Address)
-admin.site.register(models.User, UserAdmin)
+
+admin.site.register(models.Category, DraggableMPTTAdmin)
