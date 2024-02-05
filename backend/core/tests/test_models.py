@@ -97,3 +97,17 @@ class ModelTests(TestCase):
                           address.street_address1,
                           address.street_address2)
                          )
+
+    def test_create_category(self):
+        '''Test creating category'''
+        category = models.Category.objects.create(name='test category')
+        self.assertEqual(str(category), category.name)
+
+    def test_create_children_category(self):
+        '''Test creating children category'''
+        c1 = models.Category.objects.create(name='test category1')
+        c2 = models.Category.objects.create(name='test category2', parent=c1)
+        c3 = models.Category.objects.create(name='test category3', parent=c2)
+        self.assertEqual(str(c3), c3.name)
+        self.assertEqual(str(c2), c3.parent.name)
+        self.assertEqual(str(c1), c3.parent.parent.name)

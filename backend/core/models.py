@@ -4,6 +4,8 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
+
 
 
 class UserManager(BaseUserManager):
@@ -55,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Country(models.Model):
+    '''Country in address'''
     name = models.CharField(max_length=20)
 
     class Meta:
@@ -65,6 +68,7 @@ class Country(models.Model):
 
 
 class County(models.Model):
+    '''County in address_country'''
     name = models.CharField(max_length=20)
     country = models.ForeignKey(Country,
                                 on_delete=models.CASCADE,
@@ -79,6 +83,7 @@ class County(models.Model):
 
 
 class City(models.Model):
+    '''City in address__country_county'''
     class Meta:
         verbose_name_plural = 'Cities'
 
@@ -93,6 +98,7 @@ class City(models.Model):
 
 
 class Address(models.Model):
+    '''User's Address'''
     name = models.CharField(max_length=20)
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
@@ -120,3 +126,18 @@ class Address(models.Model):
                         self.street_address1,
                         self.street_address2)
         return full_address
+
+class Category(MPTTModel):
+    '''Product Category having tree relation'''
+    name = models.CharField(max_length=30, unique=True)
+    is_active = models.BooleanField(default=True)
+    parent = TreeForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, related_name='children')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
