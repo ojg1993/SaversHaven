@@ -25,13 +25,12 @@ class CountyViewSet(BaseAddressAttrViewSet):
 class CityViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.CitySerializer
     queryset = (models.City.objects
-                .select_related('county__country')
+                .select_related('county__country', 'county')
                 .all())
 
 
 class AddressViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.AddressSerializer
     queryset = (models.Address.objects
-                .select_related('city__county__country')
-                .select_related('city__county')
+                .select_related('city__county__country', 'city__county', 'city')
                 .all())
