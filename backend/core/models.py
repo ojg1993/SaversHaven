@@ -145,3 +145,20 @@ class Category(MPTTModel):
 
     def __str__(self):
         return self.name
+
+
+class Product(models.Model):
+    '''Products people buying & selling'''
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='category_products')
+    title = models.CharField(max_length=30)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    description = models.TextField()
+    is_sold = models.BooleanField(default=False)
+    hit_cnt = models.IntegerField(default=0)
+    bookmark_cnt = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title

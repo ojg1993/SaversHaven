@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -111,3 +113,17 @@ class ModelTests(TestCase):
         self.assertEqual(str(c3), c3.name)
         self.assertEqual(str(c2), c3.parent.name)
         self.assertEqual(str(c1), c3.parent.parent.name)
+
+    def test_create_product(self):
+        '''Test creating a product'''
+        user = create_user()
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=user,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+        self.assertEqual(str(product), product.title)
+        self.assertEqual(product.seller, user)
