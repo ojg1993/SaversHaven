@@ -44,5 +44,7 @@ admin.site.register(models.Country)
 admin.site.register(models.County)
 admin.site.register(models.City)
 admin.site.register(models.Address)
+admin.site.register(models.Product)
+admin.site.register(models.ProductImage)
 
 admin.site.register(models.Category, DraggableMPTTAdmin)

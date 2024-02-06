@@ -196,4 +196,4 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='product_file_name_uuid')
 
     def __str__(self):
-        return self.product
+        return self.product.title
