@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -12,12 +13,24 @@ def create_user(email='user@example.com', password='test123'):
 
 
 class ModelTests(TestCase):
+    def tearDown(self):
+        models.ProductImage.objects.all().delete()
+
     def test_register_user_with_email_successful(self):
         '''Test creating a new user with an email'''
 
         user = create_user()
         self.assertEqual(user.email, 'user@example.com')
         self.assertTrue(user.check_password('test123'))
+
+    @patch('core.models.uuid.uuid4')
+    def test_user_file_name_uuid(self, mock_uuid):
+        # Test generating image path
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.user_file_name_uuid(None, 'example.jpg')
+
+        self.assertEqual(file_path, f'uploads\\accounts\\{uuid}.jpg')
 
     def test_new_user_email_normalised(self):
         '''Test email for a new user is normalized'''
@@ -127,3 +140,37 @@ class ModelTests(TestCase):
         )
         self.assertEqual(str(product), product.title)
         self.assertEqual(product.seller, user)
+
+    @patch('core.models.uuid.uuid4')
+    def test_create_product_image_with_uuid(self, mock_uuid):
+        user = create_user()
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=user,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.product_file_name_uuid(None, 'example.jpg')
+
+        product_image = models.ProductImage.objects.create(
+            product=product,
+            image=file_path
+        )
+        uuid2 = 'test-uuid2'
+        mock_uuid.return_value = uuid2
+        file_path2 = models.product_file_name_uuid(None, 'example.jpg')
+        product_image2 = models.ProductImage.objects.create(
+            product=product,
+            image=file_path2
+        )
+        self.assertEqual(product_image.product, product)
+        self.assertEqual(product_image2.product, product)
+        self.assertEqual(file_path, product_image.image)
+        self.assertEqual(file_path2, product_image2.image)
+        self.assertEqual(file_path, f'uploads\\products\\{uuid}.jpg')
+        self.assertEqual(file_path2, f'uploads\\products\\{uuid2}.jpg')
