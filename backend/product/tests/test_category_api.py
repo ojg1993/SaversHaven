@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from product.serializers import CategorySerializer
 from core.models import Category
+from product.serializers import CategorySerializer
 
 CATEGORY_URL = reverse('product:category-list')
 
