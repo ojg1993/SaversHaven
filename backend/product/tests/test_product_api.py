@@ -1,4 +1,3 @@
-import os
 import tempfile
 from decimal import Decimal
 
@@ -9,7 +8,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Category, Product, ProductImage
-from product.serializers import ProductDetailSerializer, ProductSerializer
+from product.serializers import ProductSerializer
 
 PRODUCT_URL = reverse('product:product-list')
 
@@ -38,7 +37,7 @@ class PublicProductAPITest(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateCategoryAPITest(APITestCase):
+class PrivateProductAPITest(APITestCase):
     '''Test authenticated API requests'''
 
     def setUp(self):
@@ -65,32 +64,33 @@ class PrivateCategoryAPITest(APITestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['id'], product.id)
 
-    # def test_user_product_create(self):
-    #     '''Test user creating a product'''
-    #     category = Category.objects.create(name='Test Category')
-    #
-    #     with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
-    #         # Create black 10x10px image
-    #         img = Image.new('RGB', (10, 10))
-    #         # Save the image in image_file, converting it to the JPEG format
-    #         img.save(image_file, 'JPEG')
-    #         # Reset the file pointer to 0 to ensure correct reading
-    #         image_file.seek(0)
-    #         payload = {
-    #             'category': category,
-    #             'title': 'test_product',
-    #             'price': Decimal('10.00'),
-    #             'description': 'test description',
-    #             'image': [
-    #                 {'image': image_file}
-    #             ]
-    #         }
-    #         res = self.client.post(PRODUCT_URL, payload, format='multipart')
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(res.data['title'], payload['title'])
+    def test_create_product_with_image(self):
+        '''Test creating a product with an example image'''
+        category = Category.objects.create(name='Test Category')
 
-    def test_retrieve_category_detail(self):
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
+            # Create test image
+            img = Image.new('RGB', (10, 10))
+            # Save the test image in image_file, and convert the format to JPEG
+            img.save(image_file, 'JPEG')
+            # Reset the file pointer to 0 to ensure correct reading
+            image_file.seek(0)
+
+            payload = {
+                'category': category.id,
+                'title': 'test_product',
+                'price': Decimal('10.00'),
+                'description': 'test description',
+                'uploaded_images': [
+                    image_file
+                ]
+            }
+            res = self.client.post(PRODUCT_URL, payload, format='multipart')
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.data['title'], payload['title'])
+
+    def test_retrieve_product_detail(self):
         '''Test retrieving a product'''
         category = Category.objects.create(name='Test Category')
         product = Product.objects.create(
