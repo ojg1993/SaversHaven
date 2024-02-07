@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     middle_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=15)
     phone_number = models.CharField(max_length=20)
-    profile_image = models.ImageField(upload_to="user_file_name_uuid",
+    profile_image = models.ImageField(upload_to=user_file_name_uuid,
                                       blank=True,
                                       null=True)
     rating = models.PositiveSmallIntegerField(default=0)
@@ -193,7 +193,7 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product,
                                 on_delete=models.CASCADE,
                                 related_name='images')
-    image = models.ImageField(upload_to='product_file_name_uuid')
+    image = models.ImageField(upload_to=product_file_name_uuid)
 
     def __str__(self):
         return self.product.title

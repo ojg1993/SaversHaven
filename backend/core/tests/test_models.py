@@ -30,7 +30,7 @@ class ModelTests(TestCase):
         mock_uuid.return_value = uuid
         file_path = models.user_file_name_uuid(None, 'example.jpg')
 
-        self.assertEqual(file_path, f'uploads\\accounts\\{uuid}.jpg')
+        self.assertEqual(file_path, f'uploads/accounts/{uuid}.jpg')
 
     def test_new_user_email_normalised(self):
         '''Test email for a new user is normalized'''
@@ -172,5 +172,5 @@ class ModelTests(TestCase):
         self.assertEqual(product_image2.product, product)
         self.assertEqual(file_path, product_image.image)
         self.assertEqual(file_path2, product_image2.image)
-        self.assertEqual(file_path, f'uploads\\products\\{uuid}.jpg')
-        self.assertEqual(file_path2, f'uploads\\products\\{uuid2}.jpg')
+        self.assertEqual(file_path, f'uploads/products/{uuid}.jpg')
+        self.assertEqual(file_path2, f'uploads/products/{uuid2}.jpg')
