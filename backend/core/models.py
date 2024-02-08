@@ -54,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Set false when introducing verification functionalities
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'

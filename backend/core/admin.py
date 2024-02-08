@@ -35,7 +35,7 @@ class UserAdmin(BaseUserAdmin):
     )
     ordering = ['id']
     list_display = ['email', 'nickname', 'is_staff']
-    readonly_fields = ['last_login', 'created_at', 'modified_at', 'id']
+    readonly_fields = ['last_login', 'date_joined', 'modified_at', 'id']
 
 
 admin.site.register(models.User, UserAdmin)
