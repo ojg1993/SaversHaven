@@ -15,10 +15,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'default_key')
 
 SITE_ID = 1
 
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Application definition
 
@@ -44,16 +44,16 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Authentication
-    'rest_framework.authtoken',
-    'rest_framework_simplejwt',
+    'rest_framework.authtoken',  # drf token auth
+    'rest_framework_simplejwt',  # jwt token auth
 
-    # 'dj_rest_auth',
-    # 'dj_rest_auth.registration',
-    #
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google'
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    'allauth',
+    'allauth.account',  # local account related
+    'allauth.socialaccount',  # social login support
+    'allauth.socialaccount.providers.google'  # google login
 ]
 
 MIDDLEWARE = [
@@ -65,8 +65,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # "allauth.account.middleware.AccountMiddleware",  # django-allauth
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -134,19 +132,58 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# drf config
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ],
 }
 
+# djangorestframework-simplejwt config
 SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ('Bearer'),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
+    "SIGNING_KEY": SECRET_KEY,
+    "USER_ID_FIELD": 'id',
+    "USER_ID_CLAIM": 'user_id',
 }
 
+# dj-rest-auth config
+REST_AUTH = {
+    "TOKEN_MODEL": None,
+    "USE_JWT": True,  # using jwt token based auth
+    "JWT_AUTH_HTTPONLY": False,  # for refresh token
+    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
+}
+
+# django-allauth config
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none" # switch to mandatory for enabling email verification
+# ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
+
+# drf-spectacular config
 SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': r'/api',
     'COMPONENT_SPLIT_REQUEST': True,
