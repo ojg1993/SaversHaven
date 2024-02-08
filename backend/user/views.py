@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 
-from account import serializers
+from user import serializers
 
 
 class RegisterView(generics.CreateAPIView):
