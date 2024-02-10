@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
     # Authentication
     'rest_framework.authtoken',  # drf token auth
-    'rest_framework_simplejwt',  # jwt token auth
+    # 'rest_framework_simplejwt',  # jwt token auth
 
     'dj_rest_auth',
     'dj_rest_auth.registration',
@@ -132,6 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 
+ACCOUNT_ADAPTER = 'user.adapters.CustomAccountAdapter'
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # drf config
@@ -150,7 +152,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "SIGNING_KEY": SECRET_KEY,
     "USER_ID_FIELD": 'id',
-    "USER_ID_CLAIM": 'user_id',
+    # "USER_ID_CLAIM": 'user_id',
 }
 
 # dj-rest-auth config
