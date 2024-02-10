@@ -56,20 +56,11 @@ class CustomRegisterSerializer(RegisterSerializer):
     last_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
 
-    def validate_email(self, email):
-        email = get_adapter().clean_email(email)
-        if allauth_account_settings.UNIQUE_EMAIL:
-            if email and EmailAddress.objects.filter(email=email, verified=True).exists():
-                raise serializers.ValidationError(
-                    _('A user is already registered with this e-mail address.'),
-                )
-        return email
-
     def get_cleaned_data(self):
         super().get_cleaned_data()
         return {
             "email": self.validated_data.get('email', ""),
-            "password1": self.validated_data.get('password1', ""),
+            "password": self.validated_data.get('password1', ""),
             "nickname": self.validated_data.get('nickname', ""),
             "first_name": self.validated_data.get('first_name', ""),
             "last_name": self.validated_data.get('last_name', ""),
