@@ -60,7 +60,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         super().get_cleaned_data()
         return {
             "email": self.validated_data.get('email', ""),
-            "password": self.validated_data.get('password1', ""),
+            "password1": self.validated_data.get('password1', ""),
             "nickname": self.validated_data.get('nickname', ""),
             "first_name": self.validated_data.get('first_name', ""),
             "last_name": self.validated_data.get('last_name', ""),
@@ -76,8 +76,10 @@ class CustomRegisterSerializer(RegisterSerializer):
 
         setup_user_email(request, user, [])
         user.email = self.cleaned_data.get('email')
-        user.password = self.cleaned_data.get('password1')
         user.nickname = self.cleaned_data.get('nickname')
         user.first_name = self.cleaned_data.get('first_name')
         user.last_name = self.cleaned_data.get('last_name')
         user.phone_number = self.cleaned_data.get('phone_number')
+
+        adapter.clean_password(self.cleaned_data['password1'], user=user)
+        return user
