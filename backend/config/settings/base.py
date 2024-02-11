@@ -146,10 +146,11 @@ REST_FRAMEWORK = {
 
 # djangorestframework-simplejwt config
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ('Bearer'),
+    "AUTH_HEADER_TYPES": ('Bearer',),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
+    'ALGORITHM': 'HS256',
     "SIGNING_KEY": SECRET_KEY,
 }
 
@@ -178,4 +179,4 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
-LOGIN_REDIRECT_URL = "api/auth/google/login/callback/"
+LOGIN_REDIRECT_URL = "/admin/"
