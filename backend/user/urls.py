@@ -6,7 +6,7 @@ app_name = 'user'
 
 urlpatterns = [
     path("", include("dj_rest_auth.urls")),
-    path("registeration/", include("dj_rest_auth.registration.urls")),
+    path("registration/", include("dj_rest_auth.registration.urls")),
     path('password/rest/confirm/<uid64>/token/', PasswordResetConfirmView.as_view(), name='password_reset_confirm')
 
     # path('register/', views.RegisterView.as_view(), name='register'),
