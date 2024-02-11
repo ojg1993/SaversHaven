@@ -149,7 +149,7 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ('Bearer'),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": True,
+    "ROTATE_REFRESH_TOKENS": False,
     "SIGNING_KEY": SECRET_KEY,
 }
 
@@ -157,6 +157,8 @@ SIMPLE_JWT = {
 REST_AUTH = {
     "TOKEN_MODEL": None,
     "USE_JWT": True,  # using jwt token based auth
+    'JWT_AUTH_COOKIE': 'saven-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'saven-refresh-token',
     "JWT_AUTH_HTTPONLY": False,  # for refresh token
     "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
@@ -170,22 +172,10 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "none" # switch to mandatory for enabling email verification
 # ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
 
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    }
-}
-
 # drf-spectacular config
 SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': r'/api',
     'COMPONENT_SPLIT_REQUEST': True,
 }
+
+LOGIN_REDIRECT_URL = "api/auth/google/login/callback/"

@@ -1,18 +1,12 @@
 from django.urls import path, include
+from user import views
 
-from dj_rest_auth.views import PasswordResetConfirmView
 
 app_name = 'user'
 
 urlpatterns = [
-    path("", include("dj_rest_auth.urls")),
-    path("registration/", include("dj_rest_auth.registration.urls")),
-    path('password/rest/confirm/<uid64>/token/', PasswordResetConfirmView.as_view(), name='password_reset_confirm')
-
-    # path('register/', views.RegisterView.as_view(), name='register'),
-    # path('login/', views.TokenLoginView.as_view(), name='login'),
-    #
-    # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
+    # Google auth
+    path('google/login/', views.google_login, name='google_login'),
+    path('google/login/callback/', views.google_callback, name='google_callback'),
+    path('google/login/finish/', views.GoogleLogin.as_view(), name='google_login_todjango'),
 ]
