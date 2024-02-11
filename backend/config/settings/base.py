@@ -151,8 +151,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "SIGNING_KEY": SECRET_KEY,
-    "USER_ID_FIELD": 'id',
-    # "USER_ID_CLAIM": 'user_id',
 }
 
 # dj-rest-auth config
@@ -161,6 +159,7 @@ REST_AUTH = {
     "USE_JWT": True,  # using jwt token based auth
     "JWT_AUTH_HTTPONLY": False,  # for refresh token
     "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
+    "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
 }
 
 # django-allauth config
