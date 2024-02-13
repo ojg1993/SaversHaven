@@ -65,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "allauth.account.middleware.AccountMiddleware", # django-allauth
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -159,7 +161,7 @@ REST_AUTH = {
     "USE_JWT": True,  # using jwt token based auth
     'JWT_AUTH_COOKIE': 'saven-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'saven-refresh-token',
-    "JWT_AUTH_HTTPONLY": False,  # for refresh token
+    "JWT_AUTH_HTTPONLY": False,  # refresh token
     "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
 }
@@ -178,4 +180,6 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
-LOGIN_REDIRECT_URL = "api/auth/google/login/callback/"
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_SECRET = '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'
+STATE = 'qwewqeqwetgljhn4ilb23uy'
