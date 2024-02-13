@@ -135,7 +135,17 @@ AUTH_USER_MODEL = 'core.User'
 
 ACCOUNT_ADAPTER = 'user.adapters.CustomAccountAdapter'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Email config Todo: store host info in .env
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ojg1993@gmail.com'
+EMAIL_HOST_PASSWORD = 'yizzbymazifaplht'
+DEFAULT_FROM_MAIL = EMAIL_HOST_USER
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Saven]'
+
+
 
 # drf config
 REST_FRAMEWORK = {
@@ -160,10 +170,12 @@ REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'saven-auth'
 JWT_AUTH_REFRESH_COOKIE = 'saven-auth'
-JWT_AUTH_HTTPONLY = True
+JWT_AUTH_HTTPONLY = False
 REST_AUTH_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
 }
 
 # django-allauth config
@@ -171,8 +183,10 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "none" # switch to mandatory for enabling email verification
-# ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" # none / mandatory
+ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 
 # drf-spectacular config
 SPECTACULAR_SETTINGS = {
