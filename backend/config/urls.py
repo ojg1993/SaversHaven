@@ -18,10 +18,19 @@ urlpatterns = [
     # Authentication
     path("api/auth/", include('dj_rest_auth.urls')),
     path('api/auth/google/login/', views.google_login, name='google_login'),
-    path('api/auth/google/login/callback/', views.google_callback, name='google_callback'),
-    path('api/auth/google/login/finish/', views.GoogleLogin.as_view(), name='google_login_todjango'),
+    path('api/auth/google/login/callback/',
+         views.google_callback,
+         name='google_callback'
+         ),
+    path('api/auth/google/login/finish/',
+         views.GoogleLogin.as_view(),
+         name='google_login_todjango'
+         ),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/auth/password/reset/confirm/<uid64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('api/auth/password/reset/confirm/<uid64>/<token>/',
+         PasswordResetConfirmView.as_view(),
+         name='password_reset_confirm'
+         ),
 
     # DRF Sepctacular
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
@@ -33,5 +42,5 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls))
+                       path('__debug__/', include(debug_toolbar.urls))
                    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
