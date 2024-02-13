@@ -1,17 +1,17 @@
-from django.conf import settings
-from django.shortcuts import redirect
-from core.models import User
-from allauth.socialaccount.models import SocialAccount
-from dj_rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.google import views as google_view
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from django.http import JsonResponse
-import requests
-from rest_framework import status
 from json.decoder import JSONDecodeError
 
-from rest_framework.response import Response
+import requests
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.providers.google import views as google_view
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
+from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from rest_framework import status
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from core.models import User
 
 BASE_URL = 'http://localhost:8000/api/auth/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'google/login/callback/'
@@ -65,11 +65,11 @@ def google_callback(request):
         user = User.objects.get(email=email)
         social_user = SocialAccount.objects.get(user=user)
 
-        # 3-1. if social account doesn't exist, return error
+        # if social account doesn't exist, return error
         if social_user is None:
             return JsonResponse({'err_msg': 'email exists but not social user'},
                                 status=status.HTTP_400_BAD_REQUEST)
-        # 3-1. if social account's provide doesn't match, return error
+        # if social account's provide doesn't match, return error
         if social_user.provider != 'google':
             return JsonResponse({'err_msg': 'no matching social type'},
                                 status=status.HTTP_400_BAD_REQUEST)
@@ -78,39 +78,48 @@ def google_callback(request):
         data = {'access_token': access_token, 'code': code}
         accept = requests.post(
             f"{BASE_URL}google/login/finish/", data=data)
-        accept_status = accept.status_code
 
-        # 3-2. error handling while authentication
+        # if error occurs, return error
+        accept_status = accept.status_code
         if accept_status != 200:
-            return JsonResponse({'err_msg': 'failed to login'},
+            return JsonResponse({'err_msg': 'failed to login with google'},
                                 status=accept_status)
 
-        accept_json = accept.json()
-        accept_json.pop('user', None)
+        access_token = AccessToken.for_user(user)
+        refresh_token = RefreshToken.for_user(user)
 
-        return JsonResponse(accept_json)
+        return JsonResponse(
+            {"access token":str(access_token),
+             "refresh token":str(refresh_token)
+             }
+        )
 
     # 3. Proceed registration with the given email, access token & code
     except User.DoesNotExist:
         data = {'access_token': access_token, 'code': code}
         accept = requests.post(
-            f"{BASE_URL}/google/login/finish/", data=data)
+            f"{BASE_URL}google/login/finish/", data=data)
         accept_status = accept.status_code
 
         # 3-1. error handling while registration
         if accept_status != 200:
-            return JsonResponse({'err_msg': 'failed to signup'},
+            return JsonResponse({'err_msg': 'failed to signup with google'},
                                 status=accept_status)
 
-        accept_json = accept.json()
-        accept_json.pop('user', None)
+        user = User.objects.get(email=email)
+        access_token = AccessToken.for_user(user)
+        refresh_token = RefreshToken.for_user(user)
 
-        return JsonResponse(accept_json)
+        return JsonResponse(
+            {"access token":str(access_token),
+             "refresh token":str(refresh_token)
+             }
+        )
 
     # 4. None Social user email
     except SocialAccount.DoesNotExist:
         return JsonResponse(
-            {'err_msg': 'email exists but not a social registered user'},
+            {'err_msg': 'email exists but not a google user'},
             status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -45,8 +45,7 @@ INSTALLED_APPS = [
 
     # Authentication
     'rest_framework.authtoken',  # drf token auth
-    # 'rest_framework_simplejwt',  # jwt token auth
-
+    'rest_framework_simplejwt',
     'dj_rest_auth',
     'dj_rest_auth.registration',
 
@@ -66,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    "allauth.account.middleware.AccountMiddleware", # django-allauth
+    # "allauth.account.middleware.AccountMiddleware", # django-allauth
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -156,12 +155,13 @@ SIMPLE_JWT = {
 }
 
 # dj-rest-auth config
-REST_AUTH = {
-    "TOKEN_MODEL": None,
-    "USE_JWT": True,  # using jwt token based auth
-    'JWT_AUTH_COOKIE': 'saven-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'saven-refresh-token',
-    "JWT_AUTH_HTTPONLY": False,  # refresh token
+
+REST_AUTH_TOKEN_MODEL = None
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'saven-auth'
+JWT_AUTH_REFRESH_COOKIE = 'saven-auth'
+JWT_AUTH_HTTPONLY = True
+REST_AUTH_SERIALIZERS = {
     "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
 }
@@ -180,6 +180,7 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
+# Todo: store in .env
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_SECRET = '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'
 STATE = 'qwewqeqwetgljhn4ilb23uy'
