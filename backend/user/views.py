@@ -10,21 +10,18 @@ import requests
 from rest_framework import status
 from json.decoder import JSONDecodeError
 
-from rest_framework.views import APIView
 from rest_framework.response import Response
 
-# state = getattr(settings, 'STATE')
-state = 'qwewqeqwetgljhn4ilb23uy'
-client_id = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.apps.googleusercontent.com'
-client_secret = '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'
 
 BASE_URL = 'http://localhost:8000/api/auth/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'google/login/callback/'
 
+state = getattr(settings, "STATE")
+client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
+client_secret = getattr(settings, "SOCIAL_AUTH_GOOGLE_SECRET")
 
 def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email"
-    # client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
 
     # Code Request
     return redirect(
@@ -32,8 +29,6 @@ def google_login(request):
 
 
 def google_callback(request):
-    # client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-    # client_secret = getattr(settings, "SOCIAL_AUTH_GOOGLE_SECRET")
     code = request.GET.get('code')
 
     # 1. Access Token Request
