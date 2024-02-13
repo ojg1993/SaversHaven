@@ -7,7 +7,7 @@ from PIL import Image
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from core.models import Category, Product, ProductImage
+from core.models import Category, Product
 from product.serializers import ProductSerializer
 
 PRODUCT_URL = reverse('product:product-list')
