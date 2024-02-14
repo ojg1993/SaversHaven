@@ -45,8 +45,7 @@ INSTALLED_APPS = [
 
     # Authentication
     'rest_framework.authtoken',  # drf token auth
-    # 'rest_framework_simplejwt',  # jwt token auth
-
+    'rest_framework_simplejwt',
     'dj_rest_auth',
     'dj_rest_auth.registration',
 
@@ -65,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # "allauth.account.middleware.AccountMiddleware", # django-allauth
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -134,7 +135,17 @@ AUTH_USER_MODEL = 'core.User'
 
 ACCOUNT_ADAPTER = 'user.adapters.CustomAccountAdapter'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Email config Todo: store host info in .env
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ojg1993@gmail.com'
+EMAIL_HOST_PASSWORD = 'yizzbymazifaplht'
+DEFAULT_FROM_MAIL = EMAIL_HOST_USER
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Saven]'
+
+
 
 # drf config
 REST_FRAMEWORK = {
@@ -146,23 +157,25 @@ REST_FRAMEWORK = {
 
 # djangorestframework-simplejwt config
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ('Bearer',),
+    "AUTH_HEADER_TYPES": ('Bearer'),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
-    'ALGORITHM': 'HS256',
     "SIGNING_KEY": SECRET_KEY,
 }
 
 # dj-rest-auth config
-REST_AUTH = {
-    "TOKEN_MODEL": None,
-    "USE_JWT": True,  # using jwt token based auth
-    'JWT_AUTH_COOKIE': 'saven-auth',
-    'JWT_AUTH_REFRESH_COOKIE': 'saven-refresh-token',
-    "JWT_AUTH_HTTPONLY": False,  # for refresh token
-    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
+
+REST_AUTH_TOKEN_MODEL = None
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'saven-auth'
+JWT_AUTH_REFRESH_COOKIE = 'saven-auth'
+JWT_AUTH_HTTPONLY = False
+REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
 }
 
 # django-allauth config
@@ -170,8 +183,10 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "none" # switch to mandatory for enabling email verification
-# ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" # none / mandatory
+ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
 
 # drf-spectacular config
 SPECTACULAR_SETTINGS = {
@@ -179,4 +194,7 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
-LOGIN_REDIRECT_URL = "/admin/"
+# Todo: store in .env
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_SECRET = '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'
+STATE = 'qwewqeqwetgljhn4ilb23uy'

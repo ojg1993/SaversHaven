@@ -174,3 +174,17 @@ class ModelTests(TestCase):
         self.assertEqual(file_path2, product_image2.image)
         self.assertEqual(file_path, f'uploads/products/{uuid}.jpg')
         self.assertEqual(file_path2, f'uploads/products/{uuid2}.jpg')
+
+    def test_create_favorite(self):
+        '''Test creating favorite'''
+        user = create_user()
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=user,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+        favorite = models.Favorite.objects.create(user=user, product=product)
+        self.assertEqual(str(favorite), favorite.product.title)

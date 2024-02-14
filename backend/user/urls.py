@@ -1,12 +1,19 @@
-from django.urls import path, include
-from user import views
+from dj_rest_auth.registration.views import VerifyEmailView
+from django.urls import re_path
 
+from user import views
 
 app_name = 'user'
 
 urlpatterns = [
-    # Google auth
-    path('google/login/', views.google_login, name='google_login'),
-    path('google/login/callback/', views.google_callback, name='google_callback'),
-    path('google/login/finish/', views.GoogleLogin.as_view(), name='google_login_todjango'),
+    re_path(
+        r'^registration/account-verify-email/$',
+        VerifyEmailView.as_view(),
+        name='account_email_verification_sent'
+    ),
+    re_path(
+        r'^registration/account-confirm-email/(?P<key>[-:\w]+)/$',
+        views.ConfirmEmailView.as_view(),
+        name='account_confirm_email'
+    ),
 ]

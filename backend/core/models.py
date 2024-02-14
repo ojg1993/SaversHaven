@@ -197,3 +197,19 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.product.title
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='user_favorites'
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='product_favorites')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.product.title
