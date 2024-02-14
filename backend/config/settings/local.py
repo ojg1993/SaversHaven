@@ -1,6 +1,6 @@
-from .base import *
 from django.conf import settings
 
+from .base import *
 
 ALLOWED_HOSTS = []
 

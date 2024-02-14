@@ -19,7 +19,9 @@ class UserAdmin(BaseUserAdmin):
             'is_superuser',
             )}
          ),
-        (_('Important dates'), {'fields': ('last_login', 'created_at', 'modified_at')}),
+        (_('Important dates'), {'fields': ('last_login',
+                                           'date_joined',
+                                           'modified_at')}),
     )
     add_fieldsets = (
         (None, {
@@ -35,7 +37,7 @@ class UserAdmin(BaseUserAdmin):
     )
     ordering = ['id']
     list_display = ['email', 'nickname', 'is_staff']
-    readonly_fields = ['last_login', 'created_at', 'modified_at', 'id']
+    readonly_fields = ['last_login', 'date_joined', 'modified_at', 'id']
 
 
 admin.site.register(models.User, UserAdmin)
@@ -44,5 +46,8 @@ admin.site.register(models.Country)
 admin.site.register(models.County)
 admin.site.register(models.City)
 admin.site.register(models.Address)
+admin.site.register(models.Product)
+admin.site.register(models.ProductImage)
+admin.site.register(models.Favorite)
 
 admin.site.register(models.Category, DraggableMPTTAdmin)

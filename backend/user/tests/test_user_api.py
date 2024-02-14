@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-REGISTER_URL = reverse('account:register')
-TOKEN_LOGIN_URL = reverse('account:login')
+REGISTER_URL = reverse('user:register')
+TOKEN_LOGIN_URL = reverse('user:login')
 
 
 def create_user(**parmas):

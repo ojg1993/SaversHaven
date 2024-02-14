@@ -6,9 +6,12 @@ from product import views
 router = DefaultRouter()
 router.register('categories', views.CategoryListViewSet)
 router.register('categories', views.CategoryDetailViewSet)
+router.register('products', views.ProductListViewSet)
+router.register('products', views.ProductDetailViewSet)
 
 app_name = 'product'
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('products/<id>/favorite/', views.FavoriteAPIView.as_view(), name='favorite')
     ]

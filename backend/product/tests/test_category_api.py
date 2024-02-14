@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from product.serializers import CategorySerializer
 from core.models import Category
+from product.serializers import CategorySerializer
 
 CATEGORY_URL = reverse('product:category-list')
 
@@ -31,7 +31,7 @@ class PublicCategoryAPITest(APITestCase):
         '''Test auth required'''
         res = self.client.post(CATEGORY_URL)
         self.client.get(CATEGORY_URL)
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateCategoryAPITest(APITestCase):
