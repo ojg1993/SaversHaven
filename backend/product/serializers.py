@@ -67,10 +67,47 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
 
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Favorite
+        fields = ('product', 'user')
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        product = validated_data['product']
+        try:
+            favorite = models.Favorite.objects.get(user=user, product=product)
+            raise serializers.ValidationError(
+                {'message': 'Already saved as a favorite'})
+        except models.Favorite.DoesNotExist:
+            favorite = models.Favorite.objects.create(user=user, product=product)
+            return favorite
+
+    def destroy(self, validated_data):
+        user = self.context['request'].user
+        product = validated_data['product']
+
+        try:
+            favorite = models.Favorite.objects.get(user=user, product=product)
+            favorite.delete()
+        except models.Favorite.DoesNotExist:
+            raise serializers.ValidationError({'message': 'Not saved as a favorite'})
+            return favorite
+
+
 class ProductDetailSerializer(ProductSerializer):
+    favorite = serializers.SerializerMethodField(read_only=True)
+
     class Meta(ProductSerializer.Meta):
-        fields = ProductSerializer.Meta.fields + ['description', 'hit_cnt']
+        fields = ProductSerializer.Meta.fields + ['description', 'hit_cnt', 'favorite']
         read_only_fields = ['id', 'seller', 'bookmark_cnt', 'hit_cnt']
+
+    def get_favorite(self, product):
+        favorite = models.Favorite.objects.filter(
+            product=product,
+            user=self.context['request'].user).exists()
+        return favorite
 
     def update(self, instance, validated_data):
         images = validated_data.pop('uploaded_images', None)

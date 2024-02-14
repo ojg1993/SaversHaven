@@ -1,6 +1,8 @@
-from rest_framework import mixins, viewsets
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import generics, mixins, status, viewsets
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from address.permissions import IsAdminOrReadOnly
 from core import models
@@ -8,34 +10,28 @@ from product import serializers
 from product.permissions import IsSellerOrAdminElseReadOnly
 
 
-class CategoryListViewSet(
-    viewsets.GenericViewSet,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin
-):
+class CategoryListViewSet(viewsets.GenericViewSet,
+                          mixins.ListModelMixin,
+                          mixins.CreateModelMixin):
     '''Category serializer for list & create showing all categories from the root'''
     serializer_class = serializers.CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Category.objects.root_nodes()
 
 
-class CategoryDetailViewSet(
-    viewsets.GenericViewSet,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin
-):
+class CategoryDetailViewSet(viewsets.GenericViewSet,
+                            mixins.RetrieveModelMixin,
+                            mixins.UpdateModelMixin,
+                            mixins.DestroyModelMixin):
     '''Category Detail serializer for retrieve, update & delete'''
     serializer_class = serializers.CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Category.objects.all()
 
 
-class ProductListViewSet(
-    viewsets.GenericViewSet,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin
-):
+class ProductListViewSet(viewsets.GenericViewSet,
+                         mixins.ListModelMixin,
+                         mixins.CreateModelMixin):
     '''
     Processing product list or create a product
     It also takes images as a list of dictionary form,
@@ -44,7 +40,7 @@ class ProductListViewSet(
     serializer_class = serializers.ProductSerializer
     queryset = models.Product.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
 
 class ProductDetailViewSet(viewsets.GenericViewSet,
@@ -58,4 +54,38 @@ class ProductDetailViewSet(viewsets.GenericViewSet,
     serializer_class = serializers.ProductDetailSerializer
     queryset = models.Product.objects.all()
     permission_classes = [IsSellerOrAdminElseReadOnly]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
+
+
+class FavoriteAPIView(generics.GenericAPIView,
+                      mixins.CreateModelMixin,
+                      mixins.DestroyModelMixin):
+    serializer_class = serializers.FavoriteSerializer
+    queryset = models.Favorite.objects.all()
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        product_id = self.kwargs.get('id')
+        data = {'product': product_id}
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+            return Response({'message': 'Favorite saved'},
+                            status=status.HTTP_201_CREATED)
+        except ValidationError as error:
+            return Response(error.detail, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        product_id = self.kwargs.get('id')
+        data = {'product': product_id}
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.destroy(serializer.validated_data)
+            return Response({'message': 'Favorite removed'},
+                            status=status.HTTP_204_NO_CONTENT)
+        except ValidationError as error:
+            return Response(error.detail, status=status.HTTP_400_BAD_REQUEST)

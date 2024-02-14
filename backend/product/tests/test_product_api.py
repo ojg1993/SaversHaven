@@ -105,6 +105,7 @@ class PrivateProductAPITest(APITestCase):
         res = self.client.get(detail_url(product.id))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         res.data.pop('hit_cnt')  # retrieve method field
+        res.data.pop('favorite')  # retrieve method field
         self.assertEqual(res.data, serializer.data)
 
     def test_update_city_detail(self):
