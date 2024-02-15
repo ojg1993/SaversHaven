@@ -1,14 +1,29 @@
+# drf
 django==4.0
 djangorestframework==3.13.1
 django-filter==22.1
 django-mptt==0.15.0
-pillow>=10.0,<10.1
-drf-spectacular==0.27.1
-django-cors-headers==4.3.1
-psycopg2==2.9.9
-python-dotenv==1.0.0
 djangorestframework-recursive
 
+# django image
+pillow>=10.0,<10.1
+
+# api docs
+drf-spectacular==0.27.1
+
+# cors
+django-cors-headers==4.3.1
+
+# DB
+psycopg2==2.9.9
+python-dotenv==1.0.0
+
+# auth
 djangorestframework-simplejwt==5.2.2
 django-allauth==0.51.0
 dj-rest-auth==2.2.8
+
+# chat
+channels[daphne]==4.0.0
+channels_redis==4.0.0
+redis==5.0.1
