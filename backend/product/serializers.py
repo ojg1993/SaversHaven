@@ -84,17 +84,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
             favorite = models.Favorite.objects.create(user=user, product=product)
             return favorite
 
-    def destroy(self, validated_data):
-        user = self.context['request'].user
-        product = validated_data['product']
-
-        try:
-            favorite = models.Favorite.objects.get(user=user, product=product)
-            favorite.delete()
-        except models.Favorite.DoesNotExist:
-            raise serializers.ValidationError({'message': 'Not saved as a favorite'})
-            return favorite
-
 
 class ProductDetailSerializer(ProductSerializer):
     favorite = serializers.SerializerMethodField(read_only=True)

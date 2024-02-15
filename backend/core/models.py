@@ -211,5 +211,8 @@ class Favorite(models.Model):
         related_name='product_favorites')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'product')
+
     def __str__(self):
         return self.product.title

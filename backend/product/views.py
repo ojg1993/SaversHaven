@@ -79,13 +79,11 @@ class FavoriteAPIView(generics.GenericAPIView,
 
     def delete(self, request, *args, **kwargs):
         product_id = self.kwargs.get('id')
-        data = {'product': product_id}
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
         try:
-            serializer.destroy(serializer.validated_data)
+            favorite = models.Favorite.objects.get(product=product_id,
+                                                   user=request.user)
+            self.perform_destroy(favorite)
             return Response({'message': 'Favorite removed'},
                             status=status.HTTP_204_NO_CONTENT)
-        except ValidationError as error:
-            return Response(error.detail, status=status.HTTP_400_BAD_REQUEST)
+        except models.Favorite.DoesNotExist:
+            raise ValidationError({'message': 'Not saved as a favorite'})
