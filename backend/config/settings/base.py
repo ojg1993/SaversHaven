@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'user',
     'address',
     'product',
+    'chat',
 
     # External_apps
     'rest_framework',
@@ -89,7 +90,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-ASGI_APPLICATION = 'config.asgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -202,12 +202,17 @@ SOCIAL_AUTH_GOOGLE_CLIENT_ID = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.a
 SOCIAL_AUTH_GOOGLE_SECRET = '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'
 STATE = 'qwewqeqwetgljhn4ilb23uy'
 
-# channels config
+# # channels config
+ASGI_APPLICATION = 'config.asgi.application'
+
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [(os.environ.get('REDIS_HOST', 'localhost'), 6379)],
-        },
-    },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+    # 'default': {
+    #     'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    #     'CONFIG': {
+    #         'hosts': [('127.0.0.1', 6379)],  # Todo: store hosts info in .evn
+    #     },
+    # },
 }

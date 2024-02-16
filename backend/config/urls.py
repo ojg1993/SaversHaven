@@ -11,9 +11,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Apps
+    path('api/auth/', include('user.urls')),
     path('api/address/', include('address.urls')),
     path('api/product/', include('product.urls')),
-    path('api/auth/', include('user.urls')),
+    path('api/chat/', include('chat.urls')),
 
     # Authentication
     path("api/auth/", include('dj_rest_auth.urls')),
