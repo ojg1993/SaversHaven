@@ -211,8 +211,16 @@ class ModelTests(TestCase):
 
     def test_send_message(self):
         '''Test seding messages to chatroom'''
-        seller = create_user()
-        buyer = create_user(email='user2@example.com')
+        seller = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='test123',
+            nickname='testSeller'
+        )
+        buyer = get_user_model().objects.create_user(
+            email='user2@example.com',
+            password='test123',
+            nickname='testBuyer'
+        )
         category = models.Category.objects.create(name='test category')
         product = models.Product.objects.create(
             seller=seller,
@@ -230,17 +238,17 @@ class ModelTests(TestCase):
 
         m1 = models.Message.objects.create(
             room=chatroom,
-            sender=buyer,
+            sender=buyer.nickname,
             text='Hi, I would like to buy this item',
         )
 
         m2 = models.Message.objects.create(
             room=chatroom,
-            sender=seller,
+            sender=seller.nickname,
             text='Hello, sure! how do you want to buy it?',
         )
 
         self.assertEqual(str(m1), m1.text[:15] + '...')
         self.assertEqual(str(m2), m2.text[:15] + '...')
-        self.assertEqual(m1.sender, buyer)
-        self.assertEqual(m2.sender, seller)
+        self.assertEqual(m1.sender, buyer.nickname)
+        self.assertEqual(m2.sender, seller.nickname)
