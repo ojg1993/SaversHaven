@@ -23,6 +23,8 @@ AUTHENTICATION_BACKENDS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',  # ASGI server for channel
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +46,6 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'corsheaders',
     'channels',
-    'daphne',
 
     # Authentication
     'rest_framework.authtoken',  # drf token auth
