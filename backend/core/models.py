@@ -216,3 +216,36 @@ class Favorite(models.Model):
 
     def __str__(self):
         return self.product.title
+
+
+class ChatRoom(models.Model):
+    product = models.ForeignKey(Product,
+                                on_delete=models.PROTECT,
+                                related_name='product_chats')
+    seller = models.ForeignKey(User,
+                               on_delete=models.PROTECT,
+                               related_name='seller_chatrooms')
+    buyer = models.ForeignKey(User,
+                              on_delete=models.PROTECT,
+                              related_name='buyer_chatrooms')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'seller', 'buyer')
+
+    def __str__(self):
+        return self.product.title
+
+
+class Message(models.Model):
+    room = models.ForeignKey(ChatRoom,
+                             on_delete=models.PROTECT,
+                             related_name='room_messages')
+    sender = models.ForeignKey(User,
+                               on_delete=models.PROTECT,
+                               related_name='user_chat_messages')
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:15] + '...' if len(self.text) > 15 else self.text
