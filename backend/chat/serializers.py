@@ -1,29 +1,27 @@
 from rest_framework import serializers
+
 from core.models import ChatRoom, Message
+
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = "__all__"
 
+
 class ChatRoomSerializer(serializers.ModelSerializer):
 
     # Fetch latest message dynamically
     latest_message = serializers.SerializerMethodField()
-    # Fetch opponent's nickname dynamically
-    opponent_nickname = serializers.SerializerMethodField()
-
-    seller_nickname = serializers.SerializerMethodField()
-    buyer_nickname = serializers.SerializerMethodField()
     messages = MessageSerializer(many=True, read_only=True, source="messages.all")
 
     class Meta:
         model = ChatRoom
         fields = ('id',
-                  'seller_nickname',
-                  'buyer_nickname',
+                  'product',
+                  'seller',
+                  'buyer',
                   'latest_message',
-                  'opponent_nickname',
                   'messages'
                   )
 
@@ -34,19 +32,9 @@ class ChatRoomSerializer(serializers.ModelSerializer):
             return latest_msg.text
         return None
 
-    def get_opponent_nickname(self, obj):
-        '''Get the opponent's nickname'''
-        request_user_nickname = self.context['request'].query_params.get('nickname', None)
-        # if request user is seller return buyer's nickname
-        if request_user_nickname == obj.seller.nickname:
-            return obj.buyer.nickname
-        else:  # or return seller's nickname
-            return obj.seller.nickname
-
-    def get_seller_nickname(self, obj):
-        '''Get the seller nickname'''
-        return obj.seller.nickname
-
-    def get_buyer_nickname(self, obj):
-        '''Get the buyer nickname'''
-        return obj.buyer.nickname
+    def create(self, validated_data):
+        product = validated_data.get('product')
+        seller = validated_data.get('seller')
+        buyer = validated_data.get('buyer')
+        chat = ChatRoom.objects.create(seller=seller, product=product, buyer=buyer)
+        return chat

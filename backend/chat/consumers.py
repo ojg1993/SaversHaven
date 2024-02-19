@@ -43,7 +43,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         try:
             # Get group name with room_id
             group_name = self.get_group_name(self.room_id)
-            # Remove current channel from the groupb
+            # Remove current channel from the group
             await self.channel_layer.group_discard(group_name, self.channel_name)
 
         except Exception as e:
@@ -58,33 +58,29 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         try:
             # Extract information from the received json
-            message = content['message']
-            sender_nickname = content['sender_nickname']
-            product = content.get('product')
-            seller_nickname = content.get('seller_nickname')
-            buyer_nickname = content.get('buyer_nickname')
+            message = content.get('message')
+            sender = content.get('sender')
+            room_id = content.get('room_id')
 
             # Check if both users and product data are available
-            if not seller_nickname or not buyer_nickname or not product:
-                raise ValueError("requiring product, seller's and buyer's information.")
+            if not room_id:
+                raise ValueError("requiring product, seller and buyer information.")
 
-            # Get or create a chatroom with the extracted information
-            room = await self.get_or_create_room(product, seller_nickname, buyer_nickname)
-
-            # Update room_id data type
-            self.room_id = str(room.id)
+            # Get the chatroom with the extracted information
+            room = await self.get_chat_room(room_id)
 
             # Get group name
+            self.room_id = str(room.id)
             group_name = self.get_group_name(self.room_id)
 
             # Save received message to the DB
-            await self.save_message(room, sender_nickname, message)
+            await self.save_message(room, sender, message)
 
             # Send message to the group
             await self.channel_layer.group_send(group_name, {
                 'type': 'chat_message',
                 'message': message,
-                'sender_nickname': sender_nickname  # Add sender info
+                'sender': sender
             })
 
         except ValueError as e:
@@ -99,10 +95,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         try:
             # Extract message and sender info from the event
             message = event['message']
-            sender_nickname = event['sender_nickname']
+            sender = event['sender']
 
             # Send extracted data as json
-            await self.send_json({'message': message, 'sender_nickname': sender_nickname})
+            await self.send_json({'message': message, 'sender': sender})
         except Exception as e:
             await self.send_json({f'{e}: failed to send message'})
 
@@ -113,26 +109,9 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         return f"chat_room_{room_id}"
 
     @database_sync_to_async
-    def get_or_create_room(self, product, seller_nickname, buyer_nickname):
-        '''
-        Gets a chat room using the given email,
-         or creates one if it doesn't exist.
-        '''
-
-        try:
-            # Get or create a chatroom with the given data
-            room, created = ChatRoom.objects.get_or_create(
-                product=product,
-                seller__nickname=seller_nickname,
-                buyer__nickname=buyer_nickname
-            )
-            if created:
-                return created
-            else:
-                return room
-
-        except Exception as e:
-            raise ValueError(f"failed to get or create a chatroom: {e}") from e
+    def get_chat_room(self, room_id):
+        room = ChatRoom.objects.get(id=room_id)
+        return room
 
     @database_sync_to_async
     def save_message(self, room, sender_nickname, message):
