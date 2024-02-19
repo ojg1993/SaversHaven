@@ -49,5 +49,7 @@ admin.site.register(models.Address)
 admin.site.register(models.Product)
 admin.site.register(models.ProductImage)
 admin.site.register(models.Favorite)
+admin.site.register(models.ChatRoom)
+admin.site.register(models.Message)
 
 admin.site.register(models.Category, DraggableMPTTAdmin)
