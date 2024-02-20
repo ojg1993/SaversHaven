@@ -38,7 +38,11 @@ class ProductListViewSet(viewsets.GenericViewSet,
     and process the image in serializer's custom methods
     '''
     serializer_class = serializers.ProductSerializer
-    queryset = models.Product.objects.all()
+    queryset = (models.Product.objects
+                .select_related('seller', 'category')
+                .prefetch_related('images')
+                .all()
+                )
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
 
@@ -52,7 +56,11 @@ class ProductDetailViewSet(viewsets.GenericViewSet,
     image related update is handled in serializer's custom method
     '''
     serializer_class = serializers.ProductDetailSerializer
-    queryset = models.Product.objects.all()
+    queryset = (models.Product.objects
+                .select_related('seller', 'category')
+                .prefetch_related('images')
+                .all()
+                )
     permission_classes = [IsSellerOrAdminElseReadOnly]
     authentication_classes = [JWTAuthentication]
 
@@ -61,7 +69,9 @@ class FavoriteAPIView(generics.GenericAPIView,
                       mixins.CreateModelMixin,
                       mixins.DestroyModelMixin):
     serializer_class = serializers.FavoriteSerializer
-    queryset = models.Favorite.objects.all()
+    queryset = (models.Favorite.objects
+                .select_related('user, product')
+                .all())
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
