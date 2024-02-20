@@ -38,7 +38,11 @@ class ProductListViewSet(viewsets.GenericViewSet,
     and process the image in serializer's custom methods
     '''
     serializer_class = serializers.ProductSerializer
-    queryset = models.Product.objects.all()
+    queryset = (models.Product.objects
+                .select_related('seller', 'category')
+                .prefetch_related('images')
+                .all()
+                )
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
 
@@ -52,7 +56,11 @@ class ProductDetailViewSet(viewsets.GenericViewSet,
     image related update is handled in serializer's custom method
     '''
     serializer_class = serializers.ProductDetailSerializer
-    queryset = models.Product.objects.all()
+    queryset = (models.Product.objects
+                .select_related('seller', 'category')
+                .prefetch_related('images')
+                .all()
+                )
     permission_classes = [IsSellerOrAdminElseReadOnly]
     authentication_classes = [JWTAuthentication]
 
@@ -61,7 +69,9 @@ class FavoriteAPIView(generics.GenericAPIView,
                       mixins.CreateModelMixin,
                       mixins.DestroyModelMixin):
     serializer_class = serializers.FavoriteSerializer
-    queryset = models.Favorite.objects.all()
+    queryset = (models.Favorite.objects
+                .select_related('user, product')
+                .all())
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -79,13 +89,11 @@ class FavoriteAPIView(generics.GenericAPIView,
 
     def delete(self, request, *args, **kwargs):
         product_id = self.kwargs.get('id')
-        data = {'product': product_id}
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
         try:
-            serializer.destroy(serializer.validated_data)
+            favorite = models.Favorite.objects.get(product=product_id,
+                                                   user=request.user)
+            self.perform_destroy(favorite)
             return Response({'message': 'Favorite removed'},
                             status=status.HTTP_204_NO_CONTENT)
-        except ValidationError as error:
-            return Response(error.detail, status=status.HTTP_400_BAD_REQUEST)
+        except models.Favorite.DoesNotExist:
+            raise ValidationError({'message': 'Not saved as a favorite'})

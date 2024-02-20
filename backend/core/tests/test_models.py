@@ -188,3 +188,67 @@ class ModelTests(TestCase):
         )
         favorite = models.Favorite.objects.create(user=user, product=product)
         self.assertEqual(str(favorite), favorite.product.title)
+
+    def test_create_chatroom(self):
+        '''Test creating chatroom'''
+        seller = create_user()
+        buyer = create_user(email='user2@example.com')
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=seller,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+
+        chatroom = models.ChatRoom.objects.create(
+            product=product,
+            seller=seller,
+            buyer=buyer
+        )
+        self.assertEqual(str(chatroom), chatroom.product.title)
+
+    def test_send_message(self):
+        '''Test seding messages to chatroom'''
+        seller = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='test123',
+            nickname='testSeller'
+        )
+        buyer = get_user_model().objects.create_user(
+            email='user2@example.com',
+            password='test123',
+            nickname='testBuyer'
+        )
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=seller,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+
+        chatroom = models.ChatRoom.objects.create(
+            product=product,
+            seller=seller,
+            buyer=buyer
+        )
+
+        m1 = models.Message.objects.create(
+            room=chatroom,
+            sender=buyer.nickname,
+            text='Hi, I would like to buy this item',
+        )
+
+        m2 = models.Message.objects.create(
+            room=chatroom,
+            sender=seller.nickname,
+            text='Hello, sure! how do you want to buy it?',
+        )
+
+        self.assertEqual(str(m1), m1.text[:15] + '...')
+        self.assertEqual(str(m2), m2.text[:15] + '...')
+        self.assertEqual(m1.sender, buyer.nickname)
+        self.assertEqual(m2.sender, seller.nickname)

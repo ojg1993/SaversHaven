@@ -44,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     nickname = models.CharField(max_length=15)
     first_name = models.CharField(max_length=15)
-    middle_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=15)
     phone_number = models.CharField(max_length=20)
     profile_image = models.ImageField(upload_to=user_file_name_uuid,
@@ -211,5 +210,39 @@ class Favorite(models.Model):
         related_name='product_favorites')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'product')
+
     def __str__(self):
         return self.product.title
+
+
+class ChatRoom(models.Model):
+    product = models.ForeignKey(Product,
+                                on_delete=models.PROTECT,
+                                related_name='product_chats')
+    seller = models.ForeignKey(User,
+                               on_delete=models.PROTECT,
+                               related_name='seller_chatrooms')
+    buyer = models.ForeignKey(User,
+                              on_delete=models.PROTECT,
+                              related_name='buyer_chatrooms')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'seller', 'buyer')
+
+    def __str__(self):
+        return self.product.title
+
+
+class Message(models.Model):
+    room = models.ForeignKey(ChatRoom,
+                             on_delete=models.PROTECT,
+                             related_name='messages')
+    sender = models.CharField(max_length=15)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:15] + '...' if len(self.text) > 15 else self.text
