@@ -44,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     nickname = models.CharField(max_length=15)
     first_name = models.CharField(max_length=15)
-    middle_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=15)
     phone_number = models.CharField(max_length=20)
     profile_image = models.ImageField(upload_to=user_file_name_uuid,
