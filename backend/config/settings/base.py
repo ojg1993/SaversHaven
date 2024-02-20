@@ -2,6 +2,10 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -139,13 +143,13 @@ AUTH_USER_MODEL = 'core.User'
 
 ACCOUNT_ADAPTER = 'user.adapters.CustomAccountAdapter'
 
-# Email config Todo: store host info in .env
+# Email config
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ojg1993@gmail.com'
-EMAIL_HOST_PASSWORD = 'yizzbymazifaplht'
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_MAIL = EMAIL_HOST_USER
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Saven]'
 
@@ -198,14 +202,12 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 }
 
-# Todo: store in .env
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = '1021621946762-o8nbcvn6ehe05mm1ib9fonf45peva8kt.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.environ.get('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_SECRET')
 STATE = 'qwewqeqwetgljhn4ilb23uy'
 
 # # channels config
 ASGI_APPLICATION = 'config.asgi.application'
-
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer'
@@ -213,7 +215,7 @@ CHANNEL_LAYERS = {
     # 'default': {
     #     'BACKEND': 'channels_redis.core.RedisChannelLayer',
     #     'CONFIG': {
-    #         'hosts': [('127.0.0.1', 6379)],  # Todo: store hosts info in .evn
+    #         'hosts': [('127.0.0.1', os.environ.get('REDIS_PORT'))],
     #     },
     # },
 }
