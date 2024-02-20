@@ -246,3 +246,16 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text[:15] + '...' if len(self.text) > 15 else self.text
+
+
+class DirectTransaction(models.Model):
+    chatroom = models.ForeignKey(ChatRoom, on_delete=models.PROTECT, related_name='transaction')
+    location = models.ForeignKey(City, on_delete=models.PROTECT)
+    location_detail = models.CharField(max_length=255)
+    time = models.DateTimeField(max_length=12)
+    status = models.CharField(max_length=255, default='reserved')
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"[s:{self.chatroom.seller} b:{self.chatroom.buyer}] - {self.chatroom.product.title}"
