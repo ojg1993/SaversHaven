@@ -296,7 +296,7 @@ class ModelTests(TestCase):
             time=time_obj
         )
         self.assertEqual(str(transaction),
-                         f"[s:{chatroom.seller} b:{chatroom.buyer}] - {product.title}")
+                         f"[S:{chatroom.seller.nickname} B:{chatroom.buyer.nickname}] - {product.title}")
 
         restored_json_time = transaction.time.strftime('%Y%m%d%H%M')
         self.assertEqual(json_time, restored_json_time)

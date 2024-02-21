@@ -258,4 +258,4 @@ class DirectTransaction(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"[s:{self.chatroom.seller} b:{self.chatroom.buyer}] - {self.chatroom.product.title}"
+        return f"[S:{self.chatroom.seller.nickname} B:{self.chatroom.buyer.nickname}] - {self.chatroom.product.title}"
