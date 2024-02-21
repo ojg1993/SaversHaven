@@ -249,11 +249,16 @@ class Message(models.Model):
 
 
 class DirectTransaction(models.Model):
+    STATUS_CHOICES = (
+        ('reserved', 'Reserved'),
+        ('complete', 'Completed'),
+    )
+
     chatroom = models.ForeignKey(ChatRoom, on_delete=models.PROTECT, related_name='transaction')
     location = models.ForeignKey(City, on_delete=models.PROTECT)
     location_detail = models.CharField(max_length=255)
     time = models.DateTimeField(max_length=12)
-    status = models.CharField(max_length=255, default='reserved')
+    status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='reserved')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
