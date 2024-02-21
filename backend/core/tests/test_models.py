@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -5,8 +6,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-
-from datetime import datetime
 from core import models
 
 
@@ -296,8 +295,8 @@ class ModelTests(TestCase):
             time=time_obj
         )
         self.assertEqual(str(transaction),
-                         f"[S:{chatroom.seller.nickname} B:{chatroom.buyer.nickname}] - {product.title}")
+                         f"[S:{chatroom.seller.nickname} B:{chatroom.buyer.nickname}]"
+                         f" - {product.title}")
 
         restored_json_time = transaction.time.strftime('%Y%m%d%H%M')
         self.assertEqual(json_time, restored_json_time)
-

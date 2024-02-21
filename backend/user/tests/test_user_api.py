@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.test import override_settings
-
 
 REGISTER_URL = 'http://localhost:8000/api/auth/registration/'
 LOGIN_URL = 'http://localhost:8000/api/auth/login/'
@@ -11,12 +10,14 @@ LOGIN_URL = 'http://localhost:8000/api/auth/login/'
 def create_user(**parmas):
     return get_user_model().objects.create_user(**parmas)
 
+
 @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class PublicUserApiTest(APITestCase):
     '''Test the public features of the Account API'''
 
     def setUp(self):
         self.test_user = create_user(email='login@test.com', password='test123123123')
+
     def test_register_successful(self):
         '''Test creating a new user'''
         payload = {
@@ -48,11 +49,12 @@ class PublicUserApiTest(APITestCase):
             'phone_number': '123123123',
         }
 
-        create_user(**payload)
+        create_user(email='test@test.com', password='test123123123')
 
         res = self.client.post(REGISTER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(res.data['email'][0], 'A user is already registered with this e-mail address.')
+        self.assertEqual(res.data['email'][0],
+                         'A user is already registered with this e-mail address.')
 
     def test_register_error_password_shorter_than_10(self):
         '''Test returning an error if password is too short'''
