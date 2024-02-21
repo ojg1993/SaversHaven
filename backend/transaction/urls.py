@@ -4,7 +4,9 @@ from rest_framework.routers import DefaultRouter
 from transaction import views
 
 router = DefaultRouter()
-# router.register('transactions', views.TransactionViewSet)
+router.register('direct-transactions',
+                views.DirectTransactionViewSet,
+                basename='direct-transaction')
 
 
 app_name = 'transaction'
