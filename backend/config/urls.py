@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/address/', include('address.urls')),
     path('api/product/', include('product.urls')),
     path('api/chat/', include('chat.urls')),
+    path('api/transaction/', include('transaction.urls')),
 
     # Authentication
     path("api/auth/", include('dj_rest_auth.urls')),

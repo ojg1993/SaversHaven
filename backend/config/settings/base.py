@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'address',
     'product',
     'chat',
+    'transaction',
 
     # External_apps
     'rest_framework',
