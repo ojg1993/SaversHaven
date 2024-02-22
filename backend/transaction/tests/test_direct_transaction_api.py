@@ -124,7 +124,7 @@ class PrivateDirectTransactionAPITest(APITestCase):
             'status': 'complete'
         }
 
-        res = self.client.put(detail_url(1), payload)
+        res = self.client.put(detail_url(self.transaction.id), payload)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['status'], payload['status'])
         self.assertNotEqual(res.data['time'], self.json_time)
@@ -137,13 +137,13 @@ class PrivateDirectTransactionAPITest(APITestCase):
         }
 
         self.assertNotEqual(self.transaction.status, payload['status'])
-        res = self.client.patch(detail_url(1), payload)
+        res = self.client.patch(detail_url(self.transaction.id), payload)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['status'], payload['status'])
 
     def test_delete_direct_transaction(self):
         '''Test user delete a transaction'''
 
-        res = self.client.delete(detail_url(1))
+        res = self.client.delete(detail_url(self.transaction.id))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(models.DirectTransaction.objects.exists())

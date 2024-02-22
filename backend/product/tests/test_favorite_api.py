@@ -76,7 +76,7 @@ class PrivateFavoriteAPITest(APITestCase):
             product=product
         )
 
-        res = self.client.delete(favorite_url(favorite.id))
+        res = self.client.delete(favorite_url(product.id))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
         cnt = Favorite.objects.count()
