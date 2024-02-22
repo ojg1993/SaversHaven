@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'product',
     'chat',
     'transaction',
+    'review',
 
     # External_apps
     'rest_framework',
