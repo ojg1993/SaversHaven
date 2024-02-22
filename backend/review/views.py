@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from core.models import Review, Transaction
+from core.models import Review, DirectTransaction
 from review.serializers import ReviewSerializer
 
 
@@ -40,10 +40,10 @@ class ReviewCreateAPIView(generics.CreateAPIView):
         '''Validate transaction status and current user'''
         transaction_id = data['transaction']
         try:
-            transaction = Transaction.objects.get(id=transaction_id)
-        except Transaction.DoesNotExist:
+            transaction = DirectTransaction.objects.get(id=transaction_id)
+        except DirectTransaction.DoesNotExist:
             raise serializers.ValidationError({
-                'transaction': 'Invalid transaction ID.'
+                'DirectTransaction': 'Invalid transaction ID.'
             })
 
         if transaction.status != 'complete':
@@ -58,7 +58,7 @@ class ReviewCreateAPIView(generics.CreateAPIView):
         return data
 
     def post(self, request, *args, **kwargs):
-        transaction = Transaction.objects.get(id=self.kwargs.get('transaction'))
+        transaction = DirectTransaction.objects.get(id=self.kwargs.get('transaction'))
         reviewer = request.user.id
         receiver = transaction.chat.buyer.id \
             if reviewer == transaction.chat.seller \
