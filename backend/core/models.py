@@ -264,3 +264,15 @@ class DirectTransaction(models.Model):
 
     def __str__(self):
         return f"[S:{self.chatroom.seller.nickname} B:{self.chatroom.buyer.nickname}] - {self.chatroom.product.title}"
+
+
+class Review(models.Model):
+    transaction = models.ForeignKey(DirectTransaction, on_delete=models.PROTECT, related_name='transaction_reviews')
+    reviewer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_reviews')
+    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name='users_reviews')
+    review = models.CharField(max_length=255, blank=True, null=True)
+    rating = models.SmallIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"[{self.reviewer.nickname} -> {self.receiver.nickname}] {self.transaction.chatroom.product.title}"
