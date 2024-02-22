@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -254,7 +255,9 @@ class DirectTransaction(models.Model):
         ('complete', 'Completed'),
     )
 
-    chatroom = models.ForeignKey(ChatRoom, on_delete=models.PROTECT, related_name='transaction')
+    chatroom = models.ForeignKey(ChatRoom,
+                                 on_delete=models.PROTECT,
+                                 related_name='transaction')
     location = models.ForeignKey(City, on_delete=models.PROTECT)
     location_detail = models.CharField(max_length=255)
     time = models.DateTimeField(max_length=12)
@@ -263,16 +266,27 @@ class DirectTransaction(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"[S:{self.chatroom.seller.nickname} B:{self.chatroom.buyer.nickname}] - {self.chatroom.product.title}"
+        return (f"[S:{self.chatroom.seller.nickname} "
+                f"B:{self.chatroom.buyer.nickname}] "
+                f"- {self.chatroom.product.title}")
 
 
 class Review(models.Model):
-    transaction = models.ForeignKey(DirectTransaction, on_delete=models.PROTECT, related_name='transaction_reviews')
-    reviewer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_reviews')
-    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name='users_reviews')
+    transaction = models.ForeignKey(DirectTransaction,
+                                    on_delete=models.PROTECT,
+                                    related_name='transaction_reviews')
+    reviewer = models.ForeignKey(User,
+                                 on_delete=models.PROTECT,
+                                 related_name='user_reviews')
+    receiver = models.ForeignKey(User,
+                                 on_delete=models.PROTECT,
+                                 related_name='users_reviews')
     review = models.CharField(max_length=255, blank=True, null=True)
-    rating = models.SmallIntegerField()
+    rating = models.SmallIntegerField(validators=[MinValueValidator(1),
+                                                  MaxValueValidator(5)])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"[{self.reviewer.nickname} -> {self.receiver.nickname}] {self.transaction.chatroom.product.title}"
+        return (f"[{self.reviewer.nickname} -> "
+                f"{self.receiver.nickname}] "
+                f"{self.transaction.chatroom.product.title}")
