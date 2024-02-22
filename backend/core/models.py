@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
