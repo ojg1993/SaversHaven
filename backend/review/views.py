@@ -1,11 +1,11 @@
 from django.db.models import Q
-from rest_framework import generics, serializers, status
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from core.models import Review, DirectTransaction
+from core.models import DirectTransaction, Review
 from review.serializers import ReviewSerializer
 
 

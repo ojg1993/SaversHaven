@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Review, DirectTransaction
+from core.models import DirectTransaction, Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
