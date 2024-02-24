@@ -36,38 +36,17 @@ class ReviewCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def validate(self, data):
-        '''Validate transaction status and current user'''
-        transaction_id = data['transaction']
-        try:
-            transaction = DirectTransaction.objects.get(id=transaction_id)
-        except DirectTransaction.DoesNotExist:
-            raise serializers.ValidationError({
-                'DirectTransaction': 'Invalid transaction ID.'
-            })
-
-        if transaction.status != 'complete':
-            raise serializers.ValidationError({
-                'status': 'Transaction must be completed to leave a review.'
-            })
-        if (transaction.chat.buyer != self.request.user and
-                transaction.chat.seller != self.request.user):
-            raise serializers.ValidationError({
-                'reviewer': 'You are not a participant in this transaction.'
-            })
-        return data
-
     def post(self, request, *args, **kwargs):
-        transaction = DirectTransaction.objects.get(id=self.kwargs.get('transaction'))
-        reviewer = request.user.id
-        receiver = transaction.chat.buyer.id \
-            if reviewer == transaction.chat.seller \
-            else transaction.chat.seller.id
+        transaction = DirectTransaction.objects.get(id=self.kwargs.get('id'))
+        reviewer = request.user
+        receiver = transaction.chatroom.buyer \
+            if reviewer == transaction.chatroom.seller \
+            else transaction.chatroom.seller
 
         data = {
-            'transaction': transaction,
-            'reviewer': reviewer,
-            'receiver': receiver,
+            'transaction': transaction.id,
+            'reviewer': reviewer.id,
+            'receiver': receiver.id,
             'review': request.data['review'],
             'rating': request.data['rating']
         }
@@ -89,3 +68,4 @@ class ReviewDetailAPIView(generics.RetrieveAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    lookup_field = 'id'
