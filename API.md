@@ -328,7 +328,6 @@ err_msg: "email exists but not a google user"
 | `200 OK`           | Indicates that the token is successfully verified. |
 | `401 Unauthorized` | Indicates that the token is invalid or expired.    |
 
-
 ``` http response
 401
 {
@@ -572,7 +571,7 @@ Provides Product related CRUD functionalities
 
 ### Get a list of products
 
-`GET` api/auth/product/products/
+`GET` api/product/products/
 
 ##### Response Example
 
@@ -604,7 +603,7 @@ Provides Product related CRUD functionalities
 
 ### Upload a product
 
-`POST` api/auth/product/products/
+`POST` api/product/products/
 
 ##### Parameters
 
@@ -673,7 +672,7 @@ Provides Product related CRUD functionalities
 
 ### Get a single product
 
-`GET` api/auth/product/products/{id}/
+`GET` api/product/products/{id}/
 
 #### Parameters
 
@@ -683,10 +682,10 @@ Provides Product related CRUD functionalities
 
 ##### Response Example
 
-| Status Code        | Description                                              |
-|--------------------|----------------------------------------------------------|
-| `200 OK`           | Indicates a successful response.                         |
-| `404 Not found`    | Indicates that the product with given id does not exist. |
+| Status Code     | Description                                              |
+|-----------------|----------------------------------------------------------|
+| `200 OK`        | Indicates a successful response.                         |
+| `404 Not found` | Indicates that the product with given id does not exist. |
 
 ``` http response
 200
@@ -716,7 +715,7 @@ Provides Product related CRUD functionalities
 
 ### Update a single product
 
-`PUT`|`PATCH` api/auth/product/products/{id}/
+`PUT`|`PATCH` api/product/products/{id}/
 
 ##### Parameters
 
@@ -776,7 +775,7 @@ Provides Product related CRUD functionalities
 
 ### Delete a single product
 
-`DELETE` api/auth/product/products/{id}/
+`DELETE` api/product/products/{id}/
 
 ##### Parameters
 
@@ -814,7 +813,7 @@ Provides Product related CRUD functionalities
 
 ### Save a favorite product
 
-`POST` api/auth/product/products/{id}/favorite/
+`POST` api/product/products/{id}/favorite/
 
 ##### Parameters
 
@@ -863,7 +862,7 @@ or
 
 ### Delete a favorite product
 
-`DELETE` api/auth/product/products/{id}/favorite/
+`DELETE` api/product/products/{id}/favorite/
 
 ##### Parameters
 
@@ -902,3 +901,217 @@ or
   "code": "token_not_valid"
 }
 ```
+
+## Chat
+
+Provides live messaging between two users functionality
+
+### Get a list of related chat rooms
+
+`GET` api/chat/rooms/
+
+##### Response Example
+
+| Status Code        | Description                                     |
+|--------------------|-------------------------------------------------|
+| `200 OK`           | Indicates a successful response.                |
+| `401 Unauthorized` | Indicates that the token is invalid or expired. |
+
+``` http response
+200
+[
+    {
+        "id": 0,
+        "product": 0,
+        "seller": 0,
+        "buyer": 0,
+        "latest_message": null,
+        "messages": []
+    }
+]
+```
+
+``` http response
+401
+{
+  "detail": "Token is invalid or expired",
+  "code": "token_not_valid"
+}
+```
+
+## Chat
+
+Provides live messaging between two users functionality
+
+### Get a list of related chat rooms
+
+`GET` api/chat/rooms/
+
+##### Response Example
+
+| Status Code        | Description                                     |
+|--------------------|-------------------------------------------------|
+| `200 OK`           | Indicates a successful response.                |
+| `401 Unauthorized` | Indicates that the token is invalid or expired. |
+
+``` http response
+200
+[
+    {
+        "id": 0,
+        "product": 0,
+        "seller": 0,
+        "buyer": 0,
+        "latest_message": null,
+        "messages": []
+    }
+]
+```
+
+``` http response
+401
+{
+  "detail": "Token is invalid or expired",
+  "code": "token_not_valid"
+}
+```
+
+### Get or Create a chat room with the product owner
+
+`POST` api/chat/rooms/
+
+##### Parameters
+
+| Field        | Type      | In   | Description                                                |
+|--------------|-----------|------|------------------------------------------------------------|
+| `product_id` | `integer` | body | Specifies the id of the  product that the user interested. |
+
+##### Response Example
+
+| Status Code        | Description                                                                   |
+|--------------------|-------------------------------------------------------------------------------|
+| `200 OK`           | Indicates that chat room already exists. Returning the chat room information. |
+| `201 Created`      | Indicates that chat room does not exist. Creating a chat room                 |
+| `401 Unauthorized` | Indicates that the token is invalid or expired.                               |
+
+``` http response
+200 or 201
+[
+    {
+        "id": 0,
+        "product": 0,
+        "seller": 0,
+        "buyer": 0,
+        "latest_message": null,
+        "messages": []
+    }
+]
+```
+
+``` http response
+401
+{
+  "detail": "Token is invalid or expired",
+  "code": "token_not_valid"
+}
+```
+
+### Get a list of messages belonging to the chatroom
+
+`POST` api/chat/rooms/{room_id}/
+
+##### Parameters
+
+| Field     | Type      | In     | Description                       |
+|-----------|-----------|--------|-----------------------------------|
+| `room_id` | `integer` | header | Specifies the id of the chatroom. |
+
+##### Response Example
+
+| Status Code     | Description                                                                   |
+|-----------------|-------------------------------------------------------------------------------|
+| `200 OK`        | Indicates that chat room already exists. Returning the chat room information. |
+| `404 Not Found` | Indicates that message does not exists in the given chatroom.                 |
+
+``` http response
+200
+[
+    {
+        "id": 0,
+        "sender": "string",
+        "text": "string",
+        "created_at": "2024-02-26T14:27:52.044217Z",
+        "room": 0
+    }
+]
+```
+
+``` http response
+400
+{
+    "detail": "Not found."
+}
+```
+
+### Establish a connection to a chatroom
+
+`GET` ws://localhost:8000/ws/rooms/{room_id}/
+
+##### Parameters
+
+| Field     | Type      | In     | Description                       |
+|-----------|-----------|--------|-----------------------------------|
+| `room_id` | `integer` | header | Specifies the id of the chatroom. |
+
+#### Request Example
+
+```
+// WebSocket connection
+var socket = new WebSocket("ws://localhost:8000/ws/rooms/{room_id}/");
+```
+
+##### Response Example
+
+| Status Code             | Description                                                         |
+|-------------------------|---------------------------------------------------------------------|
+| `WebSocket HANDSHAKING` | Indicates that the client and server are establishing a connection. |
+| `WebSocket CONNECT`     | Indicates that connection is successfully established.              |
+
+<br>
+
+![image](https://github.com/ojg1993/SaversHaven/assets/61238157/31febeb4-5194-4b5b-8cdb-3da368ea2579)
+
+### Send a message to the chatroom
+
+ws://localhost:8000/ws/rooms/{room_id}/
+
+
+##### Parameters
+
+| Field     | Type      | In   | Description                       |
+|-----------|-----------|------|-----------------------------------|
+| `room_id` | `integer` | body | Specifies the id of the chatroom. |
+| `message` | `string`  | body | Specifies message content.        |
+| `sender`  | `string`  | body | Specifies nickname of the sender. |
+
+#### Request Example
+```
+// Messaging function
+function sendMessage(message) {
+    var messageObject = {
+        type: "message",
+        content: message,
+        sender: "admin",
+        room_id: 1
+    };
+    // Serializing to json format ans sending it to the server
+    socket.send(JSON.stringify(messageObject));
+}
+
+// calling messaging function
+sendMessage("WebSocket api documentation!");
+```
+
+##### Response Example
+
+![image](https://github.com/ojg1993/SaversHaven/assets/61238157/52304d2f-0832-4e5e-820a-3b86a8af1541)
