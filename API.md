@@ -263,7 +263,7 @@ or
 ``` http response
 400
 {
-err_msg: "email exists but not a google user"
+    "err_msg": "email exists but not a google user"
 }
 ```
 
@@ -1063,7 +1063,7 @@ Provides live messaging between two users functionality
 |-----------|-----------|--------|-----------------------------------|
 | `room_id` | `integer` | header | Specifies the id of the chatroom. |
 
-#### Request Example
+##### Request Example
 
 ```
 // WebSocket connection
@@ -1085,7 +1085,6 @@ var socket = new WebSocket("ws://localhost:8000/ws/rooms/{room_id}/");
 
 ws://localhost:8000/ws/rooms/{room_id}/
 
-
 ##### Parameters
 
 | Field     | Type      | In   | Description                       |
@@ -1094,7 +1093,8 @@ ws://localhost:8000/ws/rooms/{room_id}/
 | `message` | `string`  | body | Specifies message content.        |
 | `sender`  | `string`  | body | Specifies nickname of the sender. |
 
-#### Request Example
+##### Request Example
+
 ```
 // Messaging function
 function sendMessage(message) {
@@ -1115,3 +1115,318 @@ sendMessage("WebSocket api documentation!");
 ##### Response Example
 
 ![image](https://github.com/ojg1993/SaversHaven/assets/61238157/52304d2f-0832-4e5e-820a-3b86a8af1541)
+
+## Direct Transactions
+
+Provides Direct Transaction CRUD functionalities
+
+### Get a list of related direct transactions
+
+`GET` api/transaction/direct-transactions/
+
+##### Parameters
+
+| Field           | Type     | In     | Description                         |
+|-----------------|----------|--------|-------------------------------------|
+| `Authorization` | `string` | header | Specifies the bearer token of user. |
+
+##### Response Example
+
+| Status Code        | Description                                     |
+|--------------------|-------------------------------------------------|
+| `200 OK`           | Indicates a successful response.                |
+| `401 Unauthorized` | Indicates that the token is invalid or expired. |
+
+``` http response
+200
+[
+    {
+        "id": 0,
+        "title": "string",
+        "price": "0.00",
+        "chatroom": 0,
+        "time": "2024-02-22-13:30",
+        "location": 0,
+        "location_detail": "string",
+        "status": "reserved",
+        "created_at": "2024-02-21-12:31:56",
+        "modified_at": "2024-02-21-12:31:56"
+    }
+]
+```
+
+```http response
+401
+{
+    "detail": "Authentication credentials were not provided."
+}
+```
+
+### Book a direct transaction
+
+`POST` api/transaction/direct-transactions/
+
+##### Parameters
+
+| Field             | Type      | In     | Description                                           |
+|-------------------|-----------|--------|-------------------------------------------------------|
+| `Authorization`   | `string`  | header | Specifies the bearer token of user.                   |
+| `chatroom`        | `integer` | body   | Specifies the chatroom the transaction book occurred. |
+| `location`        | `integer` | body   | Specifies city location.                              |
+| `location_detail` | `string`  | body   | Specifies detailed location.                          |
+| `time`            | `string`  | body   | Specifies time of direct transaction.                 |
+
+##### Request Example
+
+``` http request
+{
+    "chatroom": 0,
+    "time": "2024-02-24-18:30",
+    "location": 0,
+    "location_detail": "string",
+}
+```
+
+##### Response Example
+
+| Status Code        | Description                                     |
+|--------------------|-------------------------------------------------|
+| `201 Created`      | Indicates a successful response.                |
+| `401 Unauthorized` | Indicates that the token is invalid or expired. |
+
+``` http response
+201
+{
+    "id": 0,
+    "title": "string",
+    "price": "0.00",
+    "chatroom": 0,
+    "time": "2024-02-24-18:30",
+    "location": 0,
+    "location_detail": "string",
+    "status": "string",
+    "created_at": "2024-02-26-15:26:24",
+    "modified_at": "2024-02-26-15:26:24"
+}
+```
+
+``` http response
+401
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+### Get a single direct transaction information
+
+`GET` api/transaction/direct-transactions/{id}/
+
+#### Parameters
+
+| Field           | Type      | In     | Description                                                                     |
+|-----------------|-----------|--------|---------------------------------------------------------------------------------|
+| `Authorization` | `string`  | header | Specifies the bearer token of user. Only owner of the product or admin allowed. |
+| `id`            | `integer` | header | Specifies the id of the direct transaction.                                     |
+
+##### Response Example
+
+| Status Code     | Description                                                  |
+|-----------------|--------------------------------------------------------------|
+| `200 OK`        | Indicates a successful response.                             |
+| `404 Not found` | Indicates that the transaction with given id does not exist. |
+
+``` http response
+200
+{
+    "id": 0,
+    "title": "string",
+    "price": "0.00",
+    "chatroom": 0,
+    "time": "2024-02-24-18:30",
+    "location": 0,
+    "location_detail": "string",
+    "status": "string",
+    "created_at": "2024-02-26-15:26:24",
+    "modified_at": "2024-02-26-15:26:24"
+}
+```
+
+``` http response
+404
+{
+  "detail": "Not found."
+}
+```
+
+### Update a product information and status
+
+`PUT`|`PATCH` api/transaction/direct-transactions/{id}/
+
+##### Parameters
+
+| Field           | Type      | In     | Description                                                                     |
+|-----------------|-----------|--------|---------------------------------------------------------------------------------|
+| `Authorization` | `string`  | header | Specifies the bearer token of user. Only owner of the product or admin allowed. |
+| `id`            | `integer` | header | Specifies the id of the product.                                                |
+
+##### Request Example
+
+``` http request
+{
+    "status": "complete"
+}
+```
+
+##### Response Example
+
+| Status Code     | Description                                                                        |
+|-----------------|------------------------------------------------------------------------------------|
+| `200 OK`        | Indicates a successful response.                                                   |
+| `404 Not found` | Indicates that the transaction with given id belonging to the user does not exist. |
+
+``` http response
+200
+{
+    "id": 0,
+    "title": "string",
+    "price": "0.00",
+    "chatroom": 0,
+    "time": "2024-02-24-18:30",
+    "location": 0,
+    "location_detail": "string",
+    "status": "complete",
+    "created_at": "2024-02-26-15:26:24",
+    "modified_at": "2024-02-26-15:26:24"
+}
+```
+
+``` http response
+404
+{
+  "detail": "Not found."
+}
+```
+
+## Review
+
+Provides Review CRUD functionalities
+
+### Get a list of related reviews
+
+`GET` api/review/reviews/
+
+##### Parameters
+
+| Field           | Type     | In     | Description                         |
+|-----------------|----------|--------|-------------------------------------|
+| `Authorization` | `string` | header | Specifies the bearer token of user. |
+
+##### Response Example
+
+| Status Code        | Description                                     |
+|--------------------|-------------------------------------------------|
+| `200 OK`           | Indicates a successful response.                |
+| `401 Unauthorized` | Indicates that the token is invalid or expired. |
+
+``` http response
+[
+    {
+        "id": 0,
+        "transaction": 0,
+        "reviewer": 0,
+        "receiver": 0,
+        "product_title": "string",
+        "review": "string",
+        "rating": 0,
+        "created_at": "2024-02-26T15:37:56.267003Z"
+    }
+]
+```
+
+```http response
+401
+{
+    "detail": "Authentication credentials were not provided."
+}
+```
+
+### Leave a reviews to the opponent user
+
+`POST` api/transaction/transactions/{id}/review/
+
+##### Parameters
+
+| Field           | Type      | In     | Description                                                |
+|-----------------|-----------|--------|------------------------------------------------------------|
+| `Authorization` | `string`  | header | Specifies the bearer token of user.                        |
+| `review`        | `string`  | body   | Specifies the review message sending to the opponent user. |
+| `rating`        | `integer` | body   | Specifies the rating score of the transaction.             |
+
+##### Request Example
+
+``` http resquest
+{
+  "review": "string."
+  "rating": 0
+}
+```
+
+##### Response Example
+
+| Status Code       | Description                                |
+|-------------------|--------------------------------------------|
+| `201 Created`     | Indicates a successful response.           |
+| `400 Bad Request` | Indicates that user already left a review. |
+
+``` http response
+200
+{
+    "message": "Review sent."
+}
+```
+
+```http response
+400
+{
+    "message": "Review already exists."
+}
+```
+
+### Get a review detail
+
+`POST` api/reviews/{id}
+
+##### Parameters
+
+| Field           | Type     | In     | Description                                                |
+|-----------------|----------|--------|------------------------------------------------------------|
+| `Authorization` | `string` | header | Specifies the bearer token of user.                        |
+| `id`            | `string` | header | Specifies the review message sending to the opponent user. |
+
+##### Response Example
+
+| Status Code     | Description                                    |
+|-----------------|------------------------------------------------|
+| `200 OK`        | Indicates a successful response.               |
+| `404 Not Found` | Indicates review with given id does not exist. |
+
+``` http response
+200
+{
+    "id": 0,
+    "transaction": 0,
+    "reviewer": 0,
+    "receiver": 0,
+    "product_title": "string",
+    "review": "string",
+    "rating": 0,
+    "created_at": "2024-02-26T15:37:56.267003Z"
+}
+```
+
+```http response
+404
+{
+    "detail": "Not found."
+}
+```
