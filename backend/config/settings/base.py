@@ -145,6 +145,7 @@ AUTH_USER_MODEL = 'core.User'
 
 ACCOUNT_ADAPTER = 'user.adapters.CustomAccountAdapter'
 
+
 # Email config
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
@@ -156,7 +157,6 @@ DEFAULT_FROM_MAIL = EMAIL_HOST_USER
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Saven]'
 
 
-
 # drf config
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -164,6 +164,7 @@ REST_FRAMEWORK = {
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
 }
+
 
 # djangorestframework-simplejwt config
 SIMPLE_JWT = {
@@ -174,12 +175,13 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-# dj-rest-auth config
 
+# dj-rest-auth config
 REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
+REST_SESSION_LOGIN = False
 JWT_AUTH_COOKIE = 'saven-auth'
-JWT_AUTH_REFRESH_COOKIE = 'saven-auth'
+JWT_AUTH_REFRESH_COOKIE = 'saven-auth-refresh'
 JWT_AUTH_HTTPONLY = False
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer"
@@ -188,15 +190,17 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
 }
 
+
 # django-allauth config
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "mandatory" # none / mandatory
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # none / mandatory
 ACCOUNT_EMAIL_VERIFICATION_EXPIRATION = 1
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
+
 
 # drf-spectacular config
 SPECTACULAR_SETTINGS = {
@@ -208,7 +212,8 @@ SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.environ.get('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_SECRET')
 STATE = 'qwewqeqwetgljhn4ilb23uy'
 
-# # channels config
+
+# channels config
 ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
