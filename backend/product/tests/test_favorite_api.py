@@ -81,3 +81,4 @@ class PrivateFavoriteAPITest(APITestCase):
 
         cnt = Favorite.objects.count()
         self.assertEqual(cnt, 0)
+        self.assertEqual(favorite.user, self.user)

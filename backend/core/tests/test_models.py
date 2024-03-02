@@ -361,6 +361,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(review2),
-                         f"[{review2.reviewer.nickname} -> {review2.receiver.nickname}] "
+                         f"[{review2.reviewer.nickname} -> "
+                         f"{review2.receiver.nickname}] "
                          f"{review2.transaction.chatroom.product.title}")
         self.assertEqual(review2.transaction.chatroom.product.title, product.title)
