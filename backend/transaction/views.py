@@ -4,15 +4,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from core.models import DirectTransaction
+from product.pagination import CustomPagination
 from transaction.serializers import DirectTransactionSerializer
 
 
 class DirectTransactionViewSet(viewsets.ModelViewSet):
     '''Creating & Processing direct transaction status '''
     serializer_class = DirectTransactionSerializer
+    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    queryset = DirectTransaction.objects.all()
 
     def get_queryset(self):
         # Custom queryset to filter transactions based on the current user
@@ -22,4 +23,4 @@ class DirectTransactionViewSet(viewsets.ModelViewSet):
                              Q(chatroom__seller=current_user))
         # Filter DirectTransaction objects based on the defined query
         transactions = DirectTransaction.objects.filter(user_transactions)
-        return transactions
+        return transactions.order_by('-created_at')

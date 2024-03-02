@@ -8,18 +8,19 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from chat.serializers import ChatRoomSerializer, MessageSerializer
 from core.models import ChatRoom, Message, Product
+from product.pagination import CustomPagination
 
 
 class ChatRoomListCreateView(generics.ListCreateAPIView):
-    queryset = ChatRoom.objects.all()
     serializer_class = ChatRoomSerializer
+    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         '''get a list of chat rooms belonging to the current user'''
         user = self.request.user
-        return ChatRoom.objects.filter(Q(seller=user) | Q(buyer=user))
+        return ChatRoom.objects.filter(Q(seller=user) | Q(buyer=user)).order_by('-created_at')
 
     def post(self, request, *args, **kwargs):
         '''create or get a chat room with the seller of the product'''
@@ -48,6 +49,7 @@ class MessageListView(generics.ListAPIView):
     '''Get a list of messages belonging to the chatroom'''
 
     serializer_class = MessageSerializer
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         room_id = self.kwargs.get('room_id')
@@ -61,4 +63,4 @@ class MessageListView(generics.ListAPIView):
         if not queryset.exists():
             raise Http404('Messages not found with the room_id')
 
-        return queryset
+        return queryset.order_by('-created_at')

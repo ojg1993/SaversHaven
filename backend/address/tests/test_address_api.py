@@ -62,9 +62,9 @@ class PrivateAddressAPITest(APITestCase):
         res = self.client.get(ADDRESS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
-        self.assertEqual(res.data[0]['id'], address.id)
-        self.assertEqual(res.data[1]['post_code'], address2.post_code)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertEqual(res.data['results'][1]['id'], address.id)
+        self.assertEqual(res.data['results'][0]['post_code'], address2.post_code)
 
     def test_admin_user_address_create(self):
         '''Test admin user creating an address'''

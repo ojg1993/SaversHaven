@@ -6,13 +6,14 @@ from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from core.models import DirectTransaction, Review
+from product.pagination import CustomPagination
 from review.serializers import ReviewSerializer
 
 
 class ReviewListAPIView(generics.ListAPIView):
     '''View for listing user's reviews'''
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    pagination_class = CustomPagination
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -27,7 +28,7 @@ class ReviewListAPIView(generics.ListAPIView):
 
         # Filter review objects based on the defined query
         reviews = Review.objects.filter(user_reviews)
-        return reviews
+        return reviews.order_by('-created_at')
 
 
 class ReviewCreateAPIView(generics.CreateAPIView):

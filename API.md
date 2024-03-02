@@ -510,7 +510,7 @@ Provides Address related CRUD functionalities
 
 | Method   | Path                          | Parameter             | Authorization | Description                                 |
 |----------|-------------------------------|-----------------------|---------------|---------------------------------------------|
-| `GET`    | `api/address/countries/`      |                       | All           | Get all countries available.                |
+| `GET`    | `api/address/countries/`      | int: p                | All           | Get all countries available.                |
 | `POST`   | `api/address/countries/`      | str: name             | IsAdmin       | Create a country.                           |
 | `GET`    | `api/address/countries/{id}/` | int: id               | IsAdmin       | Get the country's information.              |
 | `PUT`    | `api/address/countries/{id}/` | int: id<br/>str: name | IsAdmin       | Update the country's information.           |
@@ -521,7 +521,7 @@ Provides Address related CRUD functionalities
 
 | Method   | Path                         | Parameter                                | Authorization | Description                                |
 |----------|------------------------------|------------------------------------------|---------------|--------------------------------------------|
-| `GET`    | `api/address/counties/`      | Parameter                                | All           | Get all counties available.                |
+| `GET`    | `api/address/counties/`      | int: p                                   | All           | Get all counties available.                |
 | `POST`   | `api/address/counties/`      | str: name<br/>int: countryId             | IsAdmin       | Create a county.                           |
 | `GET`    | `api/address/counties/{id}/` | int: id                                  | IsAdmin       | Get the county's information.              |
 | `PUT`    | `api/address/counties/{id}/` | int: id<br/>str: name<br/>int: countryId | IsAdmin       | Update the county's information.           |
@@ -532,7 +532,7 @@ Provides Address related CRUD functionalities
 
 | Method   | Path                       | Parameter                               | Authorization | Description                              |
 |----------|----------------------------|-----------------------------------------|---------------|------------------------------------------|
-| `GET`    | `api/address/cities/`      |                                         | All           | Get all cities available.                |
+| `GET`    | `api/address/cities/`      | int: p                                  | All           | Get all cities available.                |
 | `POST`   | `api/address/cities/`      | str: name<br/>int: countyId             | IsAdmin       | Create a city.                           |
 | `GET`    | `api/address/cities/{id}/` | int: id                                 | IsAdmin       | Get the county's information.            |
 | `PUT`    | `api/address/cities/{id}/` | int: id<br/>str: name<br/>int: countyId | IsAdmin       | Update the city's information.           |
@@ -543,7 +543,7 @@ Provides Address related CRUD functionalities
 
 | Method   | Path                          | Parameter                                                                                                  | Authorization   | Description                                 |
 |----------|-------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|---------------------------------------------|
-| `GET`    | `api/address/addresses/`      |                                                                                                            | IsAuthenticated | Get all addresses available.                |
+| `GET`    | `api/address/addresses/`      | int: p                                                                                                     | IsAuthenticated | Get all addresses available.                |
 | `POST`   | `api/address/addresses/`      | str: name<br/>str: post_code<br/>int:city_id<br/>str: street_address1<br/>str: street_address2             | IsAuthenticated | Create an address.                          |
 | `GET`    | `api/address/addresses/{id}/` | int: id                                                                                                    | IsAuthenticated | Update the address's information.           |
 | `PUT`    | `api/address/addresses/{id}/` | int: id<br/>str: name<br/>str: post_code<br/>int:city_id<br/>str: street_address1<br/>str: street_address2 | IsAuthenticated | Update the address's information.           |
@@ -562,7 +562,7 @@ Provides Product related CRUD functionalities
 
 | Method   | Path                           | Parameter                                                                                                  | Authorization     | Description                                  |
 |----------|--------------------------------|------------------------------------------------------------------------------------------------------------|-------------------|----------------------------------------------|
-| `GET`    | `api/product/categories/`      |                                                                                                            | IsAdminOrReadOnly | Get all categories available.                |
+| `GET`    | `api/product/categories/`      | int: p                                                                                                     | IsAdminOrReadOnly | Get all categories available.                |
 | `POST`   | `api/product/categories/`      | str: name<br/>str: post_code<br/>int:city_id<br/>str: street_address1<br/>str: street_address2             | IsAdminOrReadOnly | Create a category.                           |
 | `GET`    | `api/product/categories/{id}/` | int: id                                                                                                    | IsAdminOrReadOnly | Update the category's information.           |
 | `PUT`    | `api/product/categories/{id}/` | int: id<br/>str: name<br/>str: post_code<br/>int:city_id<br/>str: street_address1<br/>str: street_address2 | IsAdminOrReadOnly | Update the category's information.           |
@@ -572,6 +572,14 @@ Provides Product related CRUD functionalities
 ### Get a list of products
 
 `GET` api/product/products/
+
+##### Parameters
+
+| Field       | Type       | In     | Description                                          |
+|-------------|------------|--------|------------------------------------------------------|
+| `p`         | `interger` | header | Specifies the page of the product list.              |
+| `catregory` | `interger` | header | Specifies category id intending to filter.           |
+| `is_sold`   | `boolean`  | header | Specifies status of the product intending to filter. |
 
 ##### Response Example
 
@@ -904,48 +912,17 @@ or
 
 ## Chat
 
-Provides live messaging between two users functionality
+Provides live messaging functionality between users
 
 ### Get a list of related chat rooms
 
 `GET` api/chat/rooms/
 
-##### Response Example
+##### Parameters
 
-| Status Code        | Description                                     |
-|--------------------|-------------------------------------------------|
-| `200 OK`           | Indicates a successful response.                |
-| `401 Unauthorized` | Indicates that the token is invalid or expired. |
-
-``` http response
-200
-[
-    {
-        "id": 0,
-        "product": 0,
-        "seller": 0,
-        "buyer": 0,
-        "latest_message": null,
-        "messages": []
-    }
-]
-```
-
-``` http response
-401
-{
-  "detail": "Token is invalid or expired",
-  "code": "token_not_valid"
-}
-```
-
-## Chat
-
-Provides live messaging between two users functionality
-
-### Get a list of related chat rooms
-
-`GET` api/chat/rooms/
+| Field | Type      | In     | Description                         |
+|-------|-----------|--------|-------------------------------------|
+| `p`   | `integer` | header | Specifies the page of the chatroom. |
 
 ##### Response Example
 
@@ -1018,13 +995,14 @@ Provides live messaging between two users functionality
 
 ### Get a list of messages belonging to the chatroom
 
-`POST` api/chat/rooms/{room_id}/
+`GET` api/chat/rooms/{room_id}/
 
 ##### Parameters
 
-| Field     | Type      | In     | Description                       |
-|-----------|-----------|--------|-----------------------------------|
-| `room_id` | `integer` | header | Specifies the id of the chatroom. |
+| Field     | Type      | In     | Description                         |
+|-----------|-----------|--------|-------------------------------------|
+| `room_id` | `integer` | header | Specifies the id of the chatroom.   |
+| `p`       | `integer` | header | Specifies the page of the messages. |
 
 ##### Response Example
 
@@ -1126,9 +1104,10 @@ Provides Direct Transaction CRUD functionalities
 
 ##### Parameters
 
-| Field           | Type     | In     | Description                         |
-|-----------------|----------|--------|-------------------------------------|
-| `Authorization` | `string` | header | Specifies the bearer token of user. |
+| Field           | Type      | In     | Description                                   |
+|-----------------|-----------|--------|-----------------------------------------------|
+| `Authorization` | `string`  | header | Specifies the bearer token of user.           |
+| `p`             | `integer` | header | Specifies the page of the direct transaction. |
 
 ##### Response Example
 
@@ -1317,9 +1296,10 @@ Provides Review CRUD functionalities
 
 ##### Parameters
 
-| Field           | Type     | In     | Description                         |
-|-----------------|----------|--------|-------------------------------------|
-| `Authorization` | `string` | header | Specifies the bearer token of user. |
+| Field           | Type      | In     | Description                         |
+|-----------------|-----------|--------|-------------------------------------|
+| `Authorization` | `string`  | header | Specifies the bearer token of user. |
+| `p`             | `integer` | header | Specifies the page of the review.   |
 
 ##### Response Example
 

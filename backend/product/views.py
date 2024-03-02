@@ -8,7 +8,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from address.permissions import IsAdminOrReadOnly
 from core import models
 from product import serializers
-from product.pagination import ProductPagination
+from product.pagination import CustomPagination
 from product.permissions import IsSellerOrAdminElseReadOnly
 
 
@@ -17,6 +17,7 @@ class CategoryListViewSet(viewsets.GenericViewSet,
                           mixins.CreateModelMixin):
     '''Category serializer for list & create showing all categories from the root'''
     serializer_class = serializers.CategorySerializer
+    pagination_class = CustomPagination
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Category.objects.root_nodes()
 
@@ -40,16 +41,16 @@ class ProductListViewSet(viewsets.GenericViewSet,
     and process the image in serializer's custom methods
     '''
     serializer_class = serializers.ProductSerializer
-    pagination_class = ProductPagination
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category', 'is_sold']
+    pagination_class = CustomPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [JWTAuthentication]
     queryset = (models.Product.objects
                 .select_related('seller', 'category')
                 .prefetch_related('images')
                 .all().order_by('-created_at')
                 )
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    authentication_classes = [JWTAuthentication]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', 'is_sold']
 
 
 class ProductDetailViewSet(viewsets.GenericViewSet,
