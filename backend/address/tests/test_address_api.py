@@ -84,8 +84,8 @@ class PrivateAddressAPITest(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(res.data['post_code'], payload['post_code'])
 
-    def test_normal_user_city_create_returning_error(self):
-        '''Test normal user trying to create a city'''
+    def test_normal_user_create_address(self):
+        '''Test normal user creating an address'''
         user = create_user()
         self.client.force_authenticate(user)
 
@@ -93,16 +93,17 @@ class PrivateAddressAPITest(APITestCase):
         county = County.objects.create(name='Test county', country=country)
         city = City.objects.create(name='Test city', county=county)
 
-        payload = {'user': self.user,
+        payload = {'user': self.user.id,
+                   'name': 'test name',
                    'post_code': '123123',
-                   'city': city,
+                   'city': city.id,
                    'street_address1': 'Test street1',
                    'street_address2': 'Test street2'
                    }
 
         res = self.client.post(ADDRESS_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_address_detail(self):
         '''Test retrieving address detail'''
