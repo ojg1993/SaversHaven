@@ -59,10 +59,9 @@ class PrivateProductAPITest(APITestCase):
         )
 
         res = self.client.get(PRODUCT_URL)
-
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]['id'], product.id)
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'][0]['id'], product.id)
 
     def test_create_product_with_image(self):
         '''Test creating a product with an example image'''

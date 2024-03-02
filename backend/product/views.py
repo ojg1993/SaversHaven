@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from address.permissions import IsAdminOrReadOnly
 from core import models
 from product import serializers
+from product.pagination import ProductPagination
 from product.permissions import IsSellerOrAdminElseReadOnly
 
 
@@ -38,10 +40,13 @@ class ProductListViewSet(viewsets.GenericViewSet,
     and process the image in serializer's custom methods
     '''
     serializer_class = serializers.ProductSerializer
+    pagination_class = ProductPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', 'is_sold']
     queryset = (models.Product.objects
                 .select_related('seller', 'category')
                 .prefetch_related('images')
-                .all()
+                .all().order_by('-created_at')
                 )
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
