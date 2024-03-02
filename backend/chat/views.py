@@ -20,7 +20,9 @@ class ChatRoomListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         '''get a list of chat rooms belonging to the current user'''
         user = self.request.user
-        return ChatRoom.objects.filter(Q(seller=user) | Q(buyer=user)).order_by('-created_at')
+        query = Q(seller=user) | Q(buyer=user)
+
+        return ChatRoom.objects.filter(query).order_by('-created_at')
 
     def post(self, request, *args, **kwargs):
         '''create or get a chat room with the seller of the product'''
