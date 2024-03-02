@@ -48,8 +48,8 @@ class PrivateCategoryAPITest(APITestCase):
         res = self.client.get(CATEGORY_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]['id'], category.id)
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'][0]['id'], category.id)
 
     def test_admin_user_category_create(self):
         '''Test admin user creating a category'''

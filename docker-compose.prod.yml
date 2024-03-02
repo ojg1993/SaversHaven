@@ -29,16 +29,6 @@ services:
     depends_on:
       - db
 
-#  frontend:
-#    container_name: frontend
-#    build:
-#      context: ./frontend
-#    restart: always
-#    stdin_open: true
-#    command: npm run build
-#    depends_on:
-#      - backend
-
   nginx:
     build:
       context: ./nginx
@@ -48,7 +38,7 @@ services:
     volumes:
       - static-data:/vol/static
     depends_on:
-      - frontend
+      - backend
 
 volumes:
   postgres-data:

@@ -48,10 +48,10 @@ class PrivateCountryAPITest(APITestCase):
 
         res = self.client.get(COUNTRY_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
-        self.assertEqual(res.data[0]['name'], c1.name)
-        self.assertEqual(res.data[1]['name'], c2.name)
-        self.assertEqual(res.data[1]['id'], c2.id)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertEqual(res.data['results'][1]['name'], c1.name)
+        self.assertEqual(res.data['results'][0]['name'], c2.name)
+        self.assertEqual(res.data['results'][0]['id'], c2.id)
 
     def test_admin_user_country_create(self):
         '''Test admin user retrieving the country list'''

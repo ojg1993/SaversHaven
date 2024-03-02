@@ -51,9 +51,9 @@ class PrivateCityAPITest(APITestCase):
         res = self.client.get(CITY_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
-        self.assertEqual(res.data[0]['id'], city.id)
-        self.assertEqual(res.data[1]['name'], city2.name)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertEqual(res.data['results'][1]['id'], city.id)
+        self.assertEqual(res.data['results'][0]['name'], city2.name)
 
     def test_admin_user_city_create(self):
         '''Test admin user retrieving the city list'''

@@ -1,8 +1,10 @@
+from datetime import datetime
 from decimal import Decimal
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 
 from core import models
 
@@ -252,3 +254,114 @@ class ModelTests(TestCase):
         self.assertEqual(str(m2), m2.text[:15] + '...')
         self.assertEqual(m1.sender, buyer.nickname)
         self.assertEqual(m2.sender, seller.nickname)
+
+    def test_book_direct_transaction(self):
+        '''Test booking a direct transaction from a chat'''
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test country')
+        city = models.City.objects.create(county=county, name='test country')
+        seller = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='test123',
+            nickname='testSeller'
+        )
+        buyer = get_user_model().objects.create_user(
+            email='user2@example.com',
+            password='test123',
+            nickname='testBuyer'
+        )
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=seller,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+
+        chatroom = models.ChatRoom.objects.create(
+            product=product,
+            seller=seller,
+            buyer=buyer
+        )
+
+        json_time = "202402201800"
+        time_obj = datetime.strptime(json_time, '%Y%m%d%H%M')
+        time_obj = time_obj.replace(tzinfo=timezone.utc)
+        transaction = models.DirectTransaction.objects.create(
+            chatroom=chatroom,
+            location=city,
+            location_detail="at Starbucks",
+            time=time_obj
+        )
+        self.assertEqual(str(transaction),
+                         f"[S:{chatroom.seller.nickname} B:{chatroom.buyer.nickname}]"
+                         f" - {product.title}")
+
+        restored_json_time = transaction.time.strftime('%Y%m%d%H%M')
+        self.assertEqual(json_time, restored_json_time)
+
+    def test_create_review(self):
+        country = models.Country.objects.create(name='test country')
+        county = models.County.objects.create(country=country, name='test country')
+        city = models.City.objects.create(county=county, name='test country')
+        seller = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='test123',
+            nickname='testSeller'
+        )
+        buyer = get_user_model().objects.create_user(
+            email='user2@example.com',
+            password='test123',
+            nickname='testBuyer'
+        )
+        category = models.Category.objects.create(name='test category')
+        product = models.Product.objects.create(
+            seller=seller,
+            category=category,
+            title='test title',
+            price=Decimal('1.00'),
+            description='test description',
+        )
+
+        chatroom = models.ChatRoom.objects.create(
+            product=product,
+            seller=seller,
+            buyer=buyer
+        )
+
+        json_time = "202402201800"
+        time_obj = datetime.strptime(json_time, '%Y%m%d%H%M')
+        time_obj = time_obj.replace(tzinfo=timezone.utc)
+        transaction = models.DirectTransaction.objects.create(
+            chatroom=chatroom,
+            location=city,
+            location_detail="at Starbucks",
+            time=time_obj
+        )
+
+        review = models.Review.objects.create(
+            transaction=transaction,
+            reviewer=buyer,
+            receiver=seller,
+            review="test review",
+            rating=3
+        )
+
+        self.assertEqual(str(review),
+                         f"[{review.reviewer.nickname} -> {review.receiver.nickname}] "
+                         f"{review.transaction.chatroom.product.title}")
+
+        review2 = models.Review.objects.create(
+            transaction=transaction,
+            reviewer=seller,
+            receiver=buyer,
+            review="test review",
+            rating=3
+        )
+
+        self.assertEqual(str(review2),
+                         f"[{review2.reviewer.nickname} -> "
+                         f"{review2.receiver.nickname}] "
+                         f"{review2.transaction.chatroom.product.title}")
+        self.assertEqual(review2.transaction.chatroom.product.title, product.title)
