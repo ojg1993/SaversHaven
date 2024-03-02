@@ -1,5 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from address import serializers
 from address.permissions import IsAdminOrReadOnly
@@ -8,7 +9,7 @@ from core import models
 
 class BaseAddressAttrViewSet(viewsets.ModelViewSet):
     '''Base ViewSet for address attributes'''
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminOrReadOnly]
 
 
@@ -31,6 +32,7 @@ class CityViewSet(BaseAddressAttrViewSet):
 
 class AddressViewSet(BaseAddressAttrViewSet):
     serializer_class = serializers.AddressSerializer
+    permission_classes = [IsAuthenticated]
     queryset = (models.Address.objects
                 .select_related('city__county__country', 'city__county', 'city')
                 .all())

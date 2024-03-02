@@ -50,5 +50,7 @@ admin.site.register(models.ProductImage)
 admin.site.register(models.Favorite)
 admin.site.register(models.ChatRoom)
 admin.site.register(models.Message)
+admin.site.register(models.DirectTransaction)
+admin.site.register(models.Review)
 
 admin.site.register(models.Category, DraggableMPTTAdmin)

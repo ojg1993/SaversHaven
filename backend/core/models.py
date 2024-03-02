@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -246,3 +247,46 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text[:15] + '...' if len(self.text) > 15 else self.text
+
+
+class DirectTransaction(models.Model):
+    STATUS_CHOICES = (
+        ('reserved', 'Reserved'),
+        ('complete', 'Completed'),
+    )
+
+    chatroom = models.ForeignKey(ChatRoom,
+                                 on_delete=models.PROTECT,
+                                 related_name='transaction')
+    location = models.ForeignKey(City, on_delete=models.PROTECT)
+    location_detail = models.CharField(max_length=255)
+    time = models.DateTimeField(max_length=12)
+    status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='reserved')
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return (f"[S:{self.chatroom.seller.nickname} "
+                f"B:{self.chatroom.buyer.nickname}] "
+                f"- {self.chatroom.product.title}")
+
+
+class Review(models.Model):
+    transaction = models.ForeignKey(DirectTransaction,
+                                    on_delete=models.PROTECT,
+                                    related_name='transaction_reviews')
+    reviewer = models.ForeignKey(User,
+                                 on_delete=models.PROTECT,
+                                 related_name='user_reviews')
+    receiver = models.ForeignKey(User,
+                                 on_delete=models.PROTECT,
+                                 related_name='users_reviews')
+    review = models.CharField(max_length=255, blank=True, null=True)
+    rating = models.SmallIntegerField(validators=[MinValueValidator(1),
+                                                  MaxValueValidator(5)])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return (f"[{self.reviewer.nickname} -> "
+                f"{self.receiver.nickname}] "
+                f"{self.transaction.chatroom.product.title}")
