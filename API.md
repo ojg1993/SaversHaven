@@ -151,10 +151,10 @@ Provides User Authentication related functionalities
 
 | Field           | Type     | In   | Description                                |
 |-----------------|----------|------|--------------------------------------------|
-| `new_password1` | `string` | body | Specifies the new password of the user.    |
-| `new_password2` | `string` | body | Specifies the password confirmation.       |
 | `uid`           | `string` | body | Specifies the unique id verifying the user |
 | `token`         | `string` | body | Specifies the verification token.          |
+| `new_password1` | `string` | body | Specifies the new password of the user.    |
+| `new_password2` | `string` | body | Specifies the password confirmation.       |
 
 ##### Request Example
 
@@ -508,36 +508,36 @@ Provides Address related CRUD functionalities
 
 ### Country CURD
 
-| Method   | Path                          | Parameter | Authorization | Description                                 |
-|----------|-------------------------------|-----------|---------------|---------------------------------------------|
-| `GET`    | `api/address/countries/`      |           | All           | Get all countries available.                |
-| `POST`   | `api/address/countries/`      | str: name | IsAdmin       | Create a country.                           |
-| `GET`    | `api/address/countries/{id}/` | int: id   | IsAdmin       | Get the country's information.              |
-| `PUT`    | `api/address/countries/{id}/` | int: id   | IsAdmin       | Update the country's information.           |
-| `PATCH`  | `api/address/countries/{id}/` | int: id   | IsAdmin       | Partially Update the country's information. |
-| `DELETE` | `api/address/countries/{id}/` | int: id   | IsAdmin       | Delete the country.                         |
+| Method   | Path                          | Parameter             | Authorization | Description                                 |
+|----------|-------------------------------|-----------------------|---------------|---------------------------------------------|
+| `GET`    | `api/address/countries/`      |                       | All           | Get all countries available.                |
+| `POST`   | `api/address/countries/`      | str: name             | IsAdmin       | Create a country.                           |
+| `GET`    | `api/address/countries/{id}/` | int: id               | IsAdmin       | Get the country's information.              |
+| `PUT`    | `api/address/countries/{id}/` | int: id<br/>str: name | IsAdmin       | Update the country's information.           |
+| `PATCH`  | `api/address/countries/{id}/` | int: id               | IsAdmin       | Partially Update the country's information. |
+| `DELETE` | `api/address/countries/{id}/` | int: id               | IsAdmin       | Delete the country.                         |
 
 ### County CURD
 
-| Method   | Path                         | Parameter                    | Authorization | Description                                |
-|----------|------------------------------|------------------------------|---------------|--------------------------------------------|
-| `GET`    | `api/address/counties/`      | Parameter                    | All           | Get all counties available.                |
-| `POST`   | `api/address/counties/`      | str: name<br/>int: countryId | IsAdmin       | Create a county.                           |
-| `GET`    | `api/address/counties/{id}/` | int: id                      | IsAdmin       | Get the county's information.              |
-| `PUT`    | `api/address/counties/{id}/` | int: id                      | IsAdmin       | Update the county's information.           |
-| `PATCH`  | `api/address/counties/{id}/` | int: id                      | IsAdmin       | Partially Update the county's information. |
-| `DELETE` | `api/address/counties/{id}/` | int: id                      | IsAdmin       | Delete the county.                         |
+| Method   | Path                         | Parameter                                | Authorization | Description                                |
+|----------|------------------------------|------------------------------------------|---------------|--------------------------------------------|
+| `GET`    | `api/address/counties/`      | Parameter                                | All           | Get all counties available.                |
+| `POST`   | `api/address/counties/`      | str: name<br/>int: countryId             | IsAdmin       | Create a county.                           |
+| `GET`    | `api/address/counties/{id}/` | int: id                                  | IsAdmin       | Get the county's information.              |
+| `PUT`    | `api/address/counties/{id}/` | int: id<br/>str: name<br/>int: countryId | IsAdmin       | Update the county's information.           |
+| `PATCH`  | `api/address/counties/{id}/` | int: id                                  | IsAdmin       | Partially Update the county's information. |
+| `DELETE` | `api/address/counties/{id}/` | int: id                                  | IsAdmin       | Delete the county.                         |
 
 ### City CRUD
 
-| Method   | Path                       | Parameter                   | Authorization | Description                              |
-|----------|----------------------------|-----------------------------|---------------|------------------------------------------|
-| `GET`    | `api/address/cities/`      |                             | All           | Get all cities available.                |
-| `POST`   | `api/address/cities/`      | str: name<br/>int: countyId | IsAdmin       | Create a city.                           |
-| `GET`    | `api/address/cities/{id}/` | int: id                     | IsAdmin       | Get the county's information.            |
-| `PUT`    | `api/address/cities/{id}/` | int: id                     | IsAdmin       | Update the city's information.           |
-| `PATCH`  | `api/address/cities/{id}/` | int: id                     | IsAdmin       | Partially Update the city's information. |
-| `DELETE` | `api/address/cities/{id}/` | int: id                     | IsAdmin       | Delete the city.                         |
+| Method   | Path                       | Parameter                               | Authorization | Description                              |
+|----------|----------------------------|-----------------------------------------|---------------|------------------------------------------|
+| `GET`    | `api/address/cities/`      |                                         | All           | Get all cities available.                |
+| `POST`   | `api/address/cities/`      | str: name<br/>int: countyId             | IsAdmin       | Create a city.                           |
+| `GET`    | `api/address/cities/{id}/` | int: id                                 | IsAdmin       | Get the county's information.            |
+| `PUT`    | `api/address/cities/{id}/` | int: id<br/>str: name<br/>int: countyId | IsAdmin       | Update the city's information.           |
+| `PATCH`  | `api/address/cities/{id}/` | int: id                                 | IsAdmin       | Partially Update the city's information. |
+| `DELETE` | `api/address/cities/{id}/` | int: id                                 | IsAdmin       | Delete the city.                         |
 
 ### Address CRUD
 
