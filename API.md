@@ -218,7 +218,10 @@ Provides User Authentication related functionalities
     "nickname": "string",
     "first_name": "string",
     "last_name": "string",
-    "phone_number": "string"
+    "phone_number": "string",
+    "reviews": [
+        {}
+    ],
   }
 }
 ```
@@ -400,7 +403,10 @@ or
   "nickname": "string",
   "first_name": "string",
   "last_name": "string",
-  "phone_number": "string"
+  "phone_number": "string",
+  "reviews": [
+        {}
+  ],
 }
 ```
 
@@ -448,7 +454,10 @@ or
   "nickname": "string",
   "first_name": "string",
   "last_name": "string",
-  "phone_number": "string"
+  "phone_number": "string",
+  "reviews": [
+        {}
+  ],
 }
 ```
 
@@ -492,6 +501,9 @@ or
   "first_name": "string",
   "last_name": "string",
   "phone_number": "string"
+  "reviews": [
+        {}
+  ],
 }
 ```
 
