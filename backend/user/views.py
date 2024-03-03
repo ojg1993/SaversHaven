@@ -7,7 +7,7 @@ from allauth.socialaccount.providers.google import views as google_view
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.conf import settings
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -145,14 +145,18 @@ class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
-        # 사용자가 이메일 확인 링크로 GET 요청을 보낼 때 실행되는 메서드
+        '''User sending get request on clicking confirmation link'''
         self.object = confirmation = self.get_object()
+        # Fetching email object, and verifying the object with confirm method
         confirmation.confirm(self.request)
-        return HttpResponseRedirect("/")  # 인증실패 / 인증성공
-        # 이메일 확인 객체를 가져오고, 해당 객체의 confirm 메서드를 호출하여 이메일을 확인
+        return JsonResponse(
+            {"message": "Email has been verified successfully."})
 
     def get_object(self, queryset=None):
-        # URL에서 추출한 이메일 확인 키를 사용하여 EmailConfirmationHMAC.from_key를 호출하여 이메일 확인 객체를 가져옴
+        '''
+        Call EmailConfirmationHMAC.from_key to get the email confirmation object,
+        using the email confirmation key extracted from the URL
+        '''
         key = self.kwargs["key"]
         email_confirmation = EmailConfirmationHMAC.from_key(key)
         if not email_confirmation:
@@ -161,12 +165,14 @@ class ConfirmEmailView(APIView):
             try:
                 email_confirmation = queryset.get(key=key.lower())
             except EmailConfirmation.DoesNotExist:
-                return HttpResponseRedirect("/")  # 인증실패 # 인증실패
+                return JsonResponse(
+                    {"message": "Email verification failed."})
         return email_confirmation
 
     def get_queryset(self):
+
+        # returning all valid email confirmation objects
         qs = EmailConfirmation.objects.all_valid()
-        # 모든 유효한 이메일 확인 객체를 반환하는 쿼리셋을 정의
+        # getting related email and user info
         qs = qs.select_related("email_address__user")
-        # 연결된 이메일 주소 및 사용자 정보를 함께 가져움
         return qs
