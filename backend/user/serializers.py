@@ -4,17 +4,28 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from core.models import Review
+from review.serializers import ReviewSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     username = None
+    reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = (
             'email', 'password', 'nickname',
-            'first_name', 'last_name', 'phone_number'
+            'first_name', 'last_name', 'phone_number',
+            'reviews'
         )
         extra_kwargs = {'password': {'write_only': True, 'min_length': 10}}
+
+    def get_reviews(self, obj):
+        user = self.context.get('request').user
+        reviews = Review.objects.filter(receiver=user)
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
 
 
 class CustomRegisterSerializer(RegisterSerializer):
