@@ -26,13 +26,17 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USER }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: Build Docker images
+      run: docker-compose -f docker-compose.prod.yml build
+
     - name: Build, tag & push Docker images to Docker Hub
       run: |
-        docker-compose -f docker-compose.prod.yml build
-        docker image tag ojg1993/saven:backend backend \
-                        ojg1993/saven:nginx nginx \
-                        ojg1993/saven:db db
-        docker-compose -f docker-compose.prod.yml push backend nginx db
+        docker image tag ojg1993/saven:backend backend
+        docker image tag ojg1993/saven:nginx nginx
+        docker image tag ojg1993/saven:db db
+
+    - name: Build, tag & push Docker images to Docker Hub
+      run: docker-compose -f docker-compose.prod.yml push db backend nginx
 
     - name: Create deployment package
       run: zip -r deploy.zip . -x '*.git*'
