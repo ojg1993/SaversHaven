@@ -26,5 +26,5 @@ jobs:
 #        run: docker-compose run --rm backend sh -c "python manage.py wait_for_db && python manage.py test"
 
       - name: Lint
-        run: ./.github/workflows/lint.sh
+        run: chmod +x ./.github/workflows/lint.sh && ./.github/workflows/lint.sh
 
