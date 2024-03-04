@@ -7,25 +7,26 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
 
   backend:
     container_name: backend
     build:
       context: ./backend
-    restart: always
+    expose:
+      - "8000"
+    env_file:
+      - ./backend/.env
     volumes:
       - static-data:/vol/web
-    environment:
-      - DB_HOST=db
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - SECRET_KEY=${DJANGO_SECRET_KEY}
-      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
-      - DEBUG=0
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             daphne -b 0.0.0.0 -p 8000 config.asgi:application"
+    restart: always
     depends_on:
       - db
 
@@ -34,7 +35,7 @@ services:
       context: ./nginx
     restart: always
     ports:
-      - "80:8000"
+      - "80:80"
     volumes:
       - static-data:/vol/static
     depends_on:
