@@ -29,13 +29,13 @@ jobs:
     - name: Build Docker images
       run: docker-compose -f docker-compose.prod.yml build
 
-    - name: Build, tag & push Docker images to Docker Hub
+    - name: Tag Docker images
       run: |
         docker image tag ojg1993/saven:backend backend
         docker image tag ojg1993/saven:nginx nginx
         docker image tag ojg1993/saven:db db
 
-    - name: Build, tag & push Docker images to Docker Hub
+    - name: Push Docker images to Docker Hub
       run: docker-compose -f docker-compose.prod.yml push db backend nginx
 
     - name: Create deployment package
