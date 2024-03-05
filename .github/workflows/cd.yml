@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-push-deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Unit & integration test with linting check' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
