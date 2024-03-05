@@ -2,7 +2,7 @@ name: Deployment on AWS in docker environment
 
 on:
   workflow_run:
-    workflows: ["Unit & integration test with linting check"]
+    workflows: ["unit & integration test with linting check"]
     types:
       - completed
 
