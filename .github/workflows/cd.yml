@@ -44,4 +44,3 @@ jobs:
           region: ap-northeast-2
           use_existing_version_if_available: true
           deployment_package: deploy.zip
-
