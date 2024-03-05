@@ -1,55 +1,46 @@
 name: Deployment on AWS in docker environment
 
 on:
-  workflow_run:
-    workflows: ["unit & integration test with linting check"]
-    types:
-      - completed
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-push-deploy:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: create env file
-      run: |
-        touch ./backend/.env
-        echo "${{ secrets.ENV_VARS }}" >> ./backend/.env
+      - name: create env file
+        run: |
+          touch ./backend/.env
+          echo "${{ secrets.ENV_VARS }}" >> ./backend/.env
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build Docker images
-      run: docker-compose -f docker-compose.prod.yml build
+      - name: Build & Push Docker images to Docker Hub
+        run: |
+          docker-compose -f docker-compose.prod.yml build
+          docker-compose -f docker-compose.prod.yml push
 
-    - name: Tag Docker images
-      run: |
-        docker image tag db ojg1993/saven:db
-        docker image tag backend ojg1993/saven:backend
-        docker image tag nginx ojg1993/saven:nginx
 
-    - name: Push Docker images to Docker Hub
-      run: docker-compose -f docker-compose.prod.yml push
+      - name: Create deployment package
+        run: zip -r deploy.zip . -x '*.git*'
 
-    - name: Create deployment package
-      run: zip -r deploy.zip . -x '*.git*'
-
-    - name: Deploy to AWS Elastic Beanstalk
-      uses: einaregilsson/beanstalk-deploy@v21
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: ${{ secrets.AWS_EB_APP_NAME }}
-        environment_name: ${{ secrets.AWS_EB_ENV_NAME }}
-        version_label: docker-cicd-eb-production-test-3
-        region: ap-northeast-2
-        use_existing_version_if_available: true
-        deployment_package: deploy.zip
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.AWS_EB_APP_NAME }}
+          environment_name: ${{ secrets.AWS_EB_ENV_NAME }}
+          version_label: docker-cicd-eb-production-test-3
+          region: ap-northeast-2
+          use_existing_version_if_available: true
+          deployment_package: deploy.zip
