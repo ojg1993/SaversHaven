@@ -31,12 +31,12 @@ jobs:
 
     - name: Tag Docker images
       run: |
-        docker image tag ojg1993/saven:backend backend
-        docker image tag ojg1993/saven:nginx nginx
-        docker image tag ojg1993/saven:db db
+        docker image tag db ojg1993/saven:db
+        docker image tag backend ojg1993/saven:backend
+        docker image tag nginx ojg1993/saven:nginx
 
     - name: Push Docker images to Docker Hub
-      run: docker-compose -f docker-compose.prod.yml push db backend nginx
+      run: docker-compose -f docker-compose.prod.yml push
 
     - name: Create deployment package
       run: zip -r deploy.zip . -x '*.git*'
