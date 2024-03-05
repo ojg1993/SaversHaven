@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:14-alpine
+    image: ojg1993/saven:db
+    build:
+      context: ./db
     restart: always
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -12,7 +14,7 @@ services:
       - POSTGRES_PASSWORD=changeme
 
   backend:
-    container_name: backend
+    image: ojg1993/saven:backend
     build:
       context: ./backend
     expose:
@@ -31,6 +33,7 @@ services:
       - db
 
   nginx:
+    image: ojg1993/saven:nginx
     build:
       context: ./nginx
     restart: always

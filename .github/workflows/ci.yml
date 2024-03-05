@@ -3,8 +3,6 @@ name: unit & integration test with linting check
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   test-lint:
@@ -27,4 +25,3 @@ jobs:
 
       - name: Lint
         run: chmod +x ./.github/workflows/lint.sh && ./.github/workflows/lint.sh
-

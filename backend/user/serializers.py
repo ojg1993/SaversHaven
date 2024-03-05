@@ -23,6 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_reviews(self, obj):
         user = self.context.get('request').user
+        if user.is_anonymous:
+            return None
         reviews = Review.objects.filter(receiver=user)
         serializer = ReviewSerializer(reviews, many=True)
         return serializer.data
