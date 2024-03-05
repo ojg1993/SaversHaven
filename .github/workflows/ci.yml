@@ -1,4 +1,4 @@
-name: Unit & integration test with linting check
+name: unit & integration test with linting check
 
 on:
   push:
