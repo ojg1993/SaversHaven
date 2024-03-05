@@ -1,14 +1,11 @@
 name: Deployment on AWS in docker environment
 
 on:
-  workflow_run:
-    workflows: [ "unit & integration test with linting check" ]
-    types:
-      - completed
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-push-deploy:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true

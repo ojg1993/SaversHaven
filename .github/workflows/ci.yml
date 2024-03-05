@@ -3,8 +3,6 @@ name: unit & integration test with linting check
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   test-lint:
