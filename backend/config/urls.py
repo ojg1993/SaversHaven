@@ -5,10 +5,22 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from user import views
+
+@api_view(['GET'])
+def health_check(request):
+    """
+    Health check endpoint to ensure the application is running properly.
+    Returns a simple 200 OK response.
+    """
+    return Response({"message": "Server running"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', health_check, name='health_check'),
 
     # Apps
     path('api/auth/', include('user.urls')),
