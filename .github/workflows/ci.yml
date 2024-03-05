@@ -27,3 +27,4 @@ jobs:
 
       - name: Lint
         run: chmod +x ./.github/workflows/lint.sh && ./.github/workflows/lint.sh
+
