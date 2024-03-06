@@ -17,8 +17,8 @@ services:
     image: ojg1993/saven:backend
     build:
       context: ./backend
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     env_file:
       - ./backend/.env
     volumes:
@@ -37,8 +37,8 @@ services:
     build:
       context: ./nginx
     restart: always
-    expose:
-      - "80"
+    ports:
+      - "80:80"
     volumes:
       - static-data:/vol/static
     depends_on:
