@@ -27,7 +27,7 @@ jobs:
       - name: Set docker-compose.prod for deployment
         run: |
           rm ./docker-compose.yml
-          touch ./docker-compose.prod.yml docker-compose.yml
+          mv ./docker-compose.prod.yml docker-compose.yml
 
       - name: Build & Push Docker images to Docker Hub
         run: |
